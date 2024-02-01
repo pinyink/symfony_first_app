@@ -3,11 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[Broadcast]
 class User
 {
     #[ORM\Id]
@@ -18,11 +17,12 @@ class User
     #[ORM\Column(length: 64)]
     private ?string $username = null;
 
-    #[ORM\Column(length: 256)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 64)]
-    private ?string $level = null;
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Level $level = null;
 
     public function getId(): ?int
     {
@@ -53,12 +53,12 @@ class User
         return $this;
     }
 
-    public function getLevel(): ?string
+    public function getLevel(): ?Level
     {
         return $this->level;
     }
 
-    public function setLevel(string $level): static
+    public function setLevel(?Level $level): static
     {
         $this->level = $level;
 

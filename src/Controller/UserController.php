@@ -24,7 +24,7 @@ class UserController extends AbstractController
         $user = new User();
         $user->setUsername('admin');
         $user->setPassword(password_hash('password', PASSWORD_BCRYPT));
-        $user->setLevel('admin');
+        // $user->setLevel(1);
         $entityManager->persist($user);
         $entityManager->flush();
         return new Response('tambah data berhasil');
