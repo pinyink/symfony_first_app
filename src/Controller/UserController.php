@@ -2,23 +2,39 @@
 
 namespace App\Controller;
 
+use App\Entity\Level;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $user = new User();
+        $level = $entityManager->getRepository(Level::class)->findAll();
+        $form = $this->createFormBuilder($user)
+                ->setAction($this->generateUrl('app_user_tambah'))
+                ->setMethod('POST')
+                ->add('username', TextType::class)
+                ->add('password', PasswordType::class)
+                ->add('level', ChoiceType::class, ['choices' => $level])
+                ->add('save', SubmitType::class, ['label' => 'Simpan'])
+                ->getForm();
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
+            'formuser' => $form
         ]);
     }
 
-    #[Route(path: '/user_tambah', name: 'app_user_tambah', methods: ['GET'])]
+    #[Route(path: '/user_tambah', name: 'app_user_tambah', methods: ['POST'])]
     public function tambah(EntityManagerInterface $entityManager): Response
     {
         $user = new User();
