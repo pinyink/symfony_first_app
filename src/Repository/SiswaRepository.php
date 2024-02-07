@@ -16,6 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SiswaRepository extends ServiceEntityRepository
 {
+    private $service;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Siswa::class);

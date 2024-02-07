@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Siswa;
 use App\Form\SiswaType;
 use App\Repository\SiswaRepository;
+use App\Service\DataTableService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,14 @@ class SiswaController extends AbstractController
             'controller_name' => 'SiswaController',
             'siswas' => $siswaRepository->findAll()
         ]);
+    }
+
+    #[Route(path: '/siswa_ajax', name: 'app_siswa_ajax', methods: ['GET'])]
+    public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
+    {
+        $dataTable->setQuery('select * from siswa');
+        $data = $dataTable->getData($entityManager, $request);
+        return $this->json($data);
     }
 
     #[Route(path: '/siswa_new', name: 'app_siswa_new', methods: ['GET', 'POST'])]
