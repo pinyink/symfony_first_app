@@ -18,17 +18,35 @@ class SiswaController extends AbstractController
     public function index(SiswaRepository $siswaRepository): Response
     {
         return $this->render('siswa/index.html.twig', [
-            'controller_name' => 'SiswaController',
-            'siswas' => $siswaRepository->findAll()
         ]);
     }
 
-    #[Route(path: '/siswa_ajax', name: 'app_siswa_ajax', methods: ['GET'])]
+    #[Route(path: '/siswa_ajax', name: 'app_siswa_ajax', methods: ['GET', 'POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
+        $dataTable->setColumnOrder(['id', 'nis', 'nama', 'alamat', 'umur']);
+        $dataTable->setColumnSearch(['id', 'nis', 'nama', 'alamat', 'umur']);
+        $dataTable->setTable('siswa');
         $dataTable->setQuery('select * from siswa');
-        $data = $dataTable->getData($entityManager, $request);
-        return $this->json($data);
+        $queryResult = $dataTable->getData($entityManager, $request);
+        $data = [];
+        foreach ($queryResult['data'] as $key => $value) {
+            $row = array();
+            $row[] = $value['id'];
+            $row[] = $value['nis'];
+            $row[] = $value['nama'];
+            $row[] = $value['alamat'];
+            $row[] = $value['umur'];
+            $row[] = "<a href='".$this->generateUrl('app_siswa_edit', ['id' => $value['id']])."' class='btn btn-info'>edit</a>";
+            $data[] = $row;
+        }
+        $output = [
+            "draw" => 0,
+            "recordsTotal" => $queryResult['count'],
+            "recordsFiltered" => $queryResult['filter'],
+            "data" => $data,
+        ];
+        return $this->json($output);
     }
 
     #[Route(path: '/siswa_new', name: 'app_siswa_new', methods: ['GET', 'POST'])]

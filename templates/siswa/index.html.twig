@@ -2,6 +2,11 @@
 
 {% block title %}Hello DashboardController!{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css" integrity="sha512-1k7mWiTNoyx2XtmI96o+hdjP8nn0f3Z2N4oF/9ZZRgijyV4omsKOXEnqL1gKQNPy2MTSP9rIEWGcH/CInulptA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css" integrity="sha512-PT0RvABaDhDQugEbpNMwgYBCnGCiTZMh9yOzUsJHDgl/dMhD9yjHAwoumnUk3JydV3QTcIkNDuN40CJxik5+WQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
 {% block body %}
 <div class="content-wrapper">
 
@@ -36,7 +41,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table">
+                <table class="table" id="example">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -44,25 +49,11 @@
                             <th>Nama</th>
                             <th>Alamat</th>
                             <th>Umur</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for siswa in siswas %}
-                        <tr>
-                            <td>{{ siswa.id }}</td>
-                            <td>{{ siswa.nis }}</td>
-                            <td>{{ siswa.nama }}</td>
-                            <td>{{ siswa.alamat }}</td>
-                            <td>{{ siswa.umur }}</td>
-                            <td>
-                                <a href="{{ path('app_siswa_edit', {'id': siswa.id}) }}">edit</a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6">no records found</td>
-                        </tr>
-                    {% endfor %}
+                    
                     </tbody>
                 </table>
             </div>
@@ -73,4 +64,46 @@
 
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $(document).ready(function () {
+            table = $('#example').DataTable({
+                scrollCollapse: true,
+                responsive: true,
+                autoWidth: false,
+                language: { search: "",
+                    searchPlaceholder: "Search",
+                    sLengthMenu: "_MENU_items"
+                },
+                "order": [],
+                "ajax": {
+                    "url": " {{ path('app_siswa_ajax') }}",
+                    "headers": {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    "type": "POST",
+                    "data": function(data) {
+                        data.token = $('meta[name=TOKEN]').attr("content");
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR.responseText);
+                    }
+                },
+                //optional
+                "columnDefs": [{
+                    "targets": [2],
+                    "orderable": false,
+                }, ],
+            });
+        });
+        
+        function reload_table() {
+            table.ajax.reload(null, false);
+        }
+    </script>
 {% endblock %}
