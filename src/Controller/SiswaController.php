@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Siswa;
 use App\Form\SiswaType;
-use App\Repository\SiswaRepository;
 use App\Service\DataTableService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,8 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class SiswaController extends AbstractController
 {
     #[Route('/siswa', name: 'app_siswa')]
-    public function index(SiswaRepository $siswaRepository): Response
+    public function index(): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         return $this->render('siswa/index.html.twig', [
         ]);
     }
@@ -69,14 +70,20 @@ class SiswaController extends AbstractController
     }
 
     #[Route('/siswa/{id}/edit', name: 'app_siswa_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Siswa $siswa, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, int $id, EntityManagerInterface $entityManager): Response
     {
+        $siswa = $entityManager->getRepository(Siswa::class)->find($id);
+        if (!$siswa) {
+            throw $this->createNotFoundException(
+                'No Siswa found for id '.$id
+            );
+        }
         $form = $this->createForm(SiswaType::class, $siswa);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            $this->addFlash('success', 'Edit Data Berhasil');
             return $this->redirectToRoute('app_siswa', [], Response::HTTP_SEE_OTHER);
         }
 
