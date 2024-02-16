@@ -50,8 +50,8 @@
                             <td>{{ level.id }}</td>
                             <td>{{ level.name }}</td>
                             <td>
-                                <a href="{{ path('app_level_show', {'id': level.id}) }}">show</a>
-                                <a href="{{ path('app_level_edit', {'id': level.id}) }}">edit</a>
+                                <a href="{{ path('app_level_show', {'id': level.id}) }}" class="btn btn-sm btn-info">show</a>
+                                <a href="{{ path('app_level_edit', {'id': level.id}) }}" class="btn btn-sm btn-primary">edit</a>
                             </td>
                         </tr>
                     {% else %}
