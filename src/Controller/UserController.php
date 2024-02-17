@@ -63,7 +63,7 @@ class UserController extends AbstractController
             $data = $request->request->all();
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
-                $data['user']['pass']
+                $data['user']['pass']['first']
             );
             $user->setPassword($hashedPassword);
             $entityManager->persist($user);
@@ -95,10 +95,10 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $request->request->all();
             $user->setRoles([$data['user']['admin']]);
-            if ($data['user']['pass'] != null) {
+            if ($data['user']['pass']['first'] != null) {
                 $hashedPassword = $passwordHasher->hashPassword(
                     $user,
-                    $data['user']['pass']
+                    $data['user']['pass']['first']
                 );
                 $user->setPassword($hashedPassword);
             }

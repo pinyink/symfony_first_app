@@ -1,0 +1,96 @@
+{% extends 'adminlte.html.twig' %}
+
+{% block title %} Profil {% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css"
+    integrity="sha512-1k7mWiTNoyx2XtmI96o+hdjP8nn0f3Z2N4oF/9ZZRgijyV4omsKOXEnqL1gKQNPy2MTSP9rIEWGcH/CInulptA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.min.css"
+    integrity="sha512-PT0RvABaDhDQugEbpNMwgYBCnGCiTZMh9yOzUsJHDgl/dMhD9yjHAwoumnUk3JydV3QTcIkNDuN40CJxik5+WQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profil</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Profil</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="card card-primary card-outline">
+                    <div class="card-body box-profile">
+                        <div class="text-center">
+                            <img class="profile-user-img img-fluid img-circle" src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/img/user4-128x128.jpg"
+                                alt="User profile picture">
+                        </div>
+                        <h3 class="profile-username text-center">Nina Mcintire</h3>
+                        <p class="text-muted text-center">Software Engineer</p>
+                        <ul class="list-group list-group-unbordered mb-3">
+                            <li class="list-group-item">
+                                <b>Followers</b> <a class="float-right">1,322</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Following</b> <a class="float-right">543</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Friends</b> <a class="float-right">13,287</a>
+                            </li>
+                        </ul>
+                        <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#summary" data-toggle="tab">summary</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#password" data-toggle="tab">Password</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="summary">
+                                {{ form_start(formuser) }}
+                                    {{ form_widget(formuser) }}
+                                    <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> simpan</button>
+                                {{ form_end(formuser) }}
+                            </div>
+                            <div class="tab-pane" id="password">
+                                {{ form_start(formpass) }}
+                                    {{ form_widget(formpass) }}
+                                    <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> simpan</button>
+                                {{ form_end(formpass) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

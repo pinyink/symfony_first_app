@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,13 +17,12 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('pass', PasswordType::class, [
+            ->add('pass', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'first_options'  => ['label' => 'Password', 'hash_property_path' => 'password'],
+                'second_options' => ['label' => 'Repeat Password'],
                 'mapped' => false,
-                'label' => 'Password',
-                'required' => false,
-                'attr' => [
-                    'autocompleted' => 'off',
-                ]
+                'required' => false
             ])
             ->add('fullname')
             ->add('admin', ChoiceType::class, [
