@@ -3,49 +3,81 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ProfilPasswordType;
+use App\Form\ProfilSummaryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'app_profil', methods:['GET']), IsGranted('IS_AUTHENTICATED')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, FormFactoryInterface $formFactory): Response
     {
         $user = $this->getUser()->getUserIdentifier();
         $dataUser = $entityManager->getRepository(User::class)->findOneBy(['username' => $user]);
-        $formUser = $this->createFormBuilder($dataUser)
-                    ->add('username', TextType::class, [
-                        'required' => false,
-                        'attr' => [
-                            'disabled' => 'disabled'
-                        ]
-                    ])
-                    ->add('fullname', TextType::class, [
-                        'label' => 'Nama Lengkap'
-                    ])
-                    ->getForm();
         
-        $formpass = $this->createFormBuilder(null)
-                    ->add('oldpassword', PasswordType::class, [
-                        'label' => 'Password Lama'
-                    ])
-                    ->add('newpassword', RepeatedType::class, [
-                        'type' => PasswordType::class,
-                        'first_options'  => ['label' => 'Password Baru', 'hash_property_path' => 'password'],
-                        'second_options' => ['label' => 'Ulangi Password Baru'],
-                        'mapped' => false,
-                        'required' => false
-                    ])
-                    ->getForm();
+        $formUser = $formFactory->createNamed('formprofil', ProfilSummaryType::class, $dataUser);
+
+        $formpass = $formFactory->createNamed('formpassword', ProfilPasswordType::class);
         return $this->render('profil/index.html.twig', [
             'formuser' => $formUser,
             'formpass' => $formpass
         ]);
+    }
+
+    #[Route(path: '/profil_summary', name: 'app_profil_summary', methods: ['POST'])]
+    public function profilSummary(Request $request, EntityManagerInterface $entityManager) : Response
+    {
+        $data = $request->request->all();
+        $username = $this->getUser()->getUserIdentifier();
+        $userId = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+        $user = $entityManager->getRepository(User::class)->find($userId->getId());
+        $user->setFullname($data['formprofil']['fullname']);
+        $entityManager->flush();
+        return $this->json([
+            'info' => 'success',
+            'message' => 'Update Data Success'
+        ]);
+    }
+
+    #[Route(path: '/profil_password', name: 'app_profil_password', methods: ['POST'])]
+    public function profilPassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, FormFactoryInterface $formFactory) : Response
+    {
+        $data = $request->request->all();
+        $username = $this->getUser()->getUserIdentifier();
+
+        $formpass = $formFactory->createNamed('formpassword', ProfilPasswordType::class);
+        $formpass->handleRequest($request);
+        if ($formpass->isValid()) {
+            $userId = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+            $user = $entityManager->getRepository(User::class)->find($userId->getId());
+            if (!$passwordHasher->isPasswordValid($user, $data['formpassword']['oldpassword'])) {
+                return $this->json([
+                    'info' => 'warning',
+                    'message' => 'Password Lama Salah'
+                ]);
+            }
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $data['formpassword']['newpassword']['first']
+            );
+            $user->setPassword($hashedPassword);
+            $entityManager->flush();
+            return $this->json([
+                'info' => 'success',
+                'message' => 'Update Password Success, Silahkan Login Kembali'
+            ]);
+        } else {
+            return $this->json([
+                'info' => 'warning',
+                'message' => 'Entry Password Tidak Sama'
+            ]);
+        }
     }
 }

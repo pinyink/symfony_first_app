@@ -94,3 +94,47 @@
 </div>
 
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        $('[name="formprofil"]').submit(function (e) { 
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "{{path('app_profil_summary')}}",
+                data: $('[name="formprofil"]').serialize(),
+                dataType: "json",
+                success: function (response) {
+                    Swal.fire({
+                        title: "Notification !",
+                        text: response.message,
+                        icon: response.info
+                    });
+                },
+                error: function (jqXHR) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+        });
+
+        $('[name="formpassword"]').submit(function (e) { 
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "{{path('app_profil_password')}}",
+                data: $('[name="formpassword"]').serialize(),
+                dataType: "json",
+                success: function (response) {
+                    Swal.fire({
+                        title: "Notification !",
+                        text: response.message,
+                        icon: response.info
+                    });
+                },
+                error: function (jqXHR) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+        });
+    </script>
+{% endblock %}
