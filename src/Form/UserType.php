@@ -41,6 +41,7 @@ class UserType extends AbstractType
             ->add('foto', FileType::class, [
                 'label' => 'Foto Profil',
                 'mapped' => false,
+                'required' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '2048k',
