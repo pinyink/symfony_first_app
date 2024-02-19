@@ -6,14 +6,17 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Service\DataTableService;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\PasswordHasher\PasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/user'), IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
@@ -53,7 +56,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, FileUploader $fileUploader): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -66,6 +69,15 @@ class UserController extends AbstractController
                 $data['user']['pass']['first']
             );
             $user->setPassword($hashedPassword);
+            // handle upload foto
+            $foto = $form->get('foto')->getData();
+            if ($foto) {
+                $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setTargetDirectory($dir);
+                $fotoFileName = $fileUploader->upload($foto);
+                $user->setFoto($fotoFileName);
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Tambah Data Berhasil');
@@ -87,7 +99,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, FileUploader $fileUploader): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -101,6 +113,14 @@ class UserController extends AbstractController
                     $data['user']['pass']['first']
                 );
                 $user->setPassword($hashedPassword);
+            }
+            // handle upload foto
+            $foto = $form->get('foto')->getData();
+            if ($foto) {
+                $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setTargetDirectory($dir);
+                $fotoFileName = $fileUploader->upload($foto);
+                $user->setFoto($fotoFileName);
             }
             $entityManager->flush();
             $this->addFlash('success', 'Edit Data Berhasil');
