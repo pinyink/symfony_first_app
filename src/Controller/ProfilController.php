@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ProfilPasswordType;
 use App\Form\ProfilSummaryType;
+use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -32,17 +33,29 @@ class ProfilController extends AbstractController
     }
 
     #[Route(path: '/profil_summary', name: 'app_profil_summary', methods: ['POST'])]
-    public function profilSummary(Request $request, EntityManagerInterface $entityManager) : Response
+    public function profilSummary(Request $request, EntityManagerInterface $entityManager, FormFactoryInterface $formFactory, FileUploader $fileUploader) : Response
     {
-        $data = $request->request->all();
         $username = $this->getUser()->getUserIdentifier();
-        $userId = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
-        $user = $entityManager->getRepository(User::class)->find($userId->getId());
-        $user->setFullname($data['formprofil']['fullname']);
-        $entityManager->flush();
+        $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
+        $formUser = $formFactory->createNamed('formprofil', ProfilSummaryType::class, $user);
+        $formUser->handleRequest($request);
+        if ($formUser->isValid()) {
+            $foto = $formUser->get('foto')->getData();
+            if ($foto) {
+                $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setTargetDirectory($dir);
+                $fotoFileName = $fileUploader->upload($foto);
+                $user->setFoto($fotoFileName);
+            }
+            $entityManager->flush();
+            return $this->json([
+                'info' => 'success',
+                'message' => 'Update Data Success'
+            ]);
+        }
         return $this->json([
-            'info' => 'success',
-            'message' => 'Update Data Success'
+            'info' => 'error',
+            'message' => 'Form Tidak Valid'
         ]);
     }
 
