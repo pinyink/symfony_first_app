@@ -50,7 +50,7 @@ when@prod:
                 type: stream
                 #path: php://stderr
                 path: "%kernel.project_dir%/var/log/prod.log"
-                level: debug
+                level: error
                 formatter: monolog.formatter.json
             console:
                 type: console
