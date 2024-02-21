@@ -1,11 +1,11 @@
 {% extends 'adminlte.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}CRUD{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css" integrity="sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css" integrity="sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css" integrity="sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% endblock %}
 
 {% block body %}
@@ -15,12 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Blank Page</h1>
+                    <h1>CRUD Page</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
+                        <li class="breadcrumb-item active">CRUD Page</li>
                     </ol>
                 </div>
             </div>
@@ -50,11 +50,10 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>NIS</th>
-                            <th>Nama</th>
-                            <th>Alamat</th>
-                            <th>Umur</th>
-                            <th>Aksi</th>
+                            <th>Entity_name</th>
+                            <th>Form_name</th>
+                            <th>Route_name</th>
+                            <th>actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,14 +86,11 @@
                 },
                 "order": [],
                 "ajax": {
-                    "url": " {{ path('app_siswa_ajax') }}",
+                    "url": " {{ path('app_crud_ajax') }}",
                     "headers": {
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     "type": "POST",
-                    "data": function(data) {
-                        data.token = $('meta[name=TOKEN]').attr("content");
-                    },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR.responseText);
                     }
