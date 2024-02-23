@@ -19,12 +19,16 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.css"
             integrity="sha512-0w74+CBOlTu44j+e8dSKFl/5Qg9JoJhfK7Gf/+5bdtzJgqP7N3+02W02rQqRrywlm8cKXg3YwQWMBIS18GYPZg=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+        <style>
+            .content-wrapper {
+                margin-top: 40pt;
+            }
+        </style>
         {% block stylesheets %}
         {% endblock %}
 
     </head>
-    <body class="hold-transition sidebar-mini">
+    <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper">
             {% include 'adminlte/header.html.twig' %}
             {% include 'adminlte/sidebar.html.twig' %}
