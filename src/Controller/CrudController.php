@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Crud;
-use App\Form\Crud1Type;
+use App\Form\CrudType;
 use App\Repository\CrudRepository;
 use App\Service\DataTableService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -54,7 +54,7 @@ class CrudController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $crud = new Crud();
-        $form = $this->createForm(Crud1Type::class, $crud);
+        $form = $this->createForm(CrudType::class, $crud);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,7 +81,7 @@ class CrudController extends AbstractController
     #[Route('/{id}/edit', name: 'app_crud_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Crud $crud, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(Crud1Type::class, $crud);
+        $form = $this->createForm(CrudType::class, $crud);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

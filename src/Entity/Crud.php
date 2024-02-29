@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CrudRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CrudRepository::class)]
@@ -21,6 +23,14 @@ class Crud
 
     #[ORM\Column(length: 64)]
     private ?string $route_name = null;
+
+    #[ORM\OneToMany(mappedBy: 'crud_id', targetEntity: CrudDetail::class)]
+    private Collection $field_name;
+
+    public function __construct()
+    {
+        $this->field_name = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +69,36 @@ class Crud
     public function setRouteName(string $route_name): static
     {
         $this->route_name = $route_name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CrudDetail>
+     */
+    public function getFieldName(): Collection
+    {
+        return $this->field_name;
+    }
+
+    public function addFieldName(CrudDetail $fieldName): static
+    {
+        if (!$this->field_name->contains($fieldName)) {
+            $this->field_name->add($fieldName);
+            $fieldName->setCrudId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFieldName(CrudDetail $fieldName): static
+    {
+        if ($this->field_name->removeElement($fieldName)) {
+            // set the owning side to null (unless already changed)
+            if ($fieldName->getCrudId() === $this) {
+                $fieldName->setCrudId(null);
+            }
+        }
 
         return $this;
     }
