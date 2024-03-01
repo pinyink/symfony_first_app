@@ -14,7 +14,7 @@ class CrudDetail
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'crudDetails')]
-    private ?Crud $crud_id = null;
+    private ?Crud $crud = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -30,14 +30,14 @@ class CrudDetail
         return $this->id;
     }
 
-    public function getCrudId(): ?Crud
+    public function getCrud(): ?Crud
     {
-        return $this->crud_id;
+        return $this->crud;
     }
 
-    public function setCrudId(?Crud $crud_id): static
+    public function setCrud(?Crud $crud): static
     {
-        $this->crud_id = $crud_id;
+        $this->crud = $crud;
 
         return $this;
     }

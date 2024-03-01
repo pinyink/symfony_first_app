@@ -24,7 +24,7 @@ class Crud
     #[ORM\Column(length: 64)]
     private ?string $route_name = null;
 
-    #[ORM\OneToMany(mappedBy: 'crud_id', targetEntity: CrudDetail::class)]
+    #[ORM\OneToMany(mappedBy: 'crud', targetEntity: CrudDetail::class)]
     private Collection $field_name;
 
     public function __construct()
@@ -85,7 +85,7 @@ class Crud
     {
         if (!$this->field_name->contains($fieldName)) {
             $this->field_name->add($fieldName);
-            $fieldName->setCrudId($this);
+            $fieldName->setCrud($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class Crud
     {
         if ($this->field_name->removeElement($fieldName)) {
             // set the owning side to null (unless already changed)
-            if ($fieldName->getCrudId() === $this) {
-                $fieldName->setCrudId(null);
+            if ($fieldName->getCrud() === $this) {
+                $fieldName->setCrud(null);
             }
         }
 
