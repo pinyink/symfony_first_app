@@ -38,7 +38,9 @@ class CrudController extends AbstractController
             $row[] = $value['entity_name'];
             $row[] = $value['form_name'];
             $row[] = $value['route_name'];
-            $row[] = "<a href='".$this->generateUrl('app_crud_edit', ['id' => $value['id']])."' class='btn btn-info btn-sm'>edit</a>";
+            $btn = "<a href='".$this->generateUrl('app_crud_edit', ['id' => $value['id']])."' class='btn btn-info btn-sm'>edit</a>";
+            $btn .= "<a href='".$this->generateUrl('app_crud_detail', ['id' => $value['id']])."' class='btn btn-primary btn-sm ml-1'>field</a>";
+            $row[] = $btn;
             $data[] = $row;
         }
         $output = [

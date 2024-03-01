@@ -15,12 +15,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>CRUD Page</h1>
+                    <h1>Crud Field</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">CRUD Page</li>
+                        <li class="breadcrumb-item">Crud</li>
+                        <li class="breadcrumb-item active">Field</li>
                     </ol>
                 </div>
             </div>
@@ -35,10 +36,10 @@
         {% endfor %}
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Title</h3>
+                <h3 class="card-title">Your Field</h3>
                 <div class="card-tools">
-                    <a href="{{ path('app_crud_new')}}" class="btn btn-tool">
-                        <i class="fas fa-plus"></i>
+                    <a href="{{ path('app_crud_index')}}" class="btn btn-tool">
+                        <i class="fas fa-list"></i>
                     </a>
                     <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
                         <i class="fas fa-times"></i>
@@ -46,22 +47,40 @@
                 </div>
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-hover" id="example">
-                    <thead>
+                <table class="table">
+                    <tbody>
                         <tr>
                             <th>Id</th>
-                            <th>Entity_name</th>
-                            <th>Form_name</th>
-                            <th>Route_name</th>
-                            <th>actions</th>
+                            <td>{{ crud.id }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                    
+                        <tr>
+                            <th>Entity_name</th>
+                            <td>{{ crud.entityName }}</td>
+                        </tr>
+                        <tr>
+                            <th>Form_name</th>
+                            <td>{{ crud.formName }}</td>
+                        </tr>
+                        <tr>
+                            <th>Route_name</th>
+                            <td>{{ crud.routeName }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
 
+        <div class="row">
+            <div class="col-md-2">
+                <button class="btn btn-primary btn-block mb-1">Tambah Field</button>
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <div id="field">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </section>
@@ -76,35 +95,32 @@
 
     <script>
         $(document).ready(function () {
-            table = $('#example').DataTable({
-                scrollCollapse: true,
-                responsive: true,
-                autoWidth: false,
-                language: { search: "",
-                    searchPlaceholder: "Search",
-                    sLengthMenu: "_MENU_items"
-                },
-                "order": [],
-                "ajax": {
-                    "url": " {{ path('app_crud_ajax') }}",
-                    "headers": {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    "type": "POST",
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR.responseText);
-                    }
-                },
-                //optional
-                "columnDefs": [{
-                    "targets": [2],
-                    "orderable": false,
-                }, ],
-            });
+            getField();
         });
-        
-        function reload_table() {
-            table.ajax.reload(null, false);
+
+        function getField() {
+            $.ajax({
+                type: "GET",
+                url: "{{ path('app_crud_detail_fields', {'id': crud.id}) }}",
+                dataType: "JSON",
+                success: function (response) {
+                    if(response.length >= 1) {
+                        var html = `<ul class="nav nav-pills flex-column">`;
+                        $.each(response, function (indexInArray, valueOfElement) { 
+                            html += `<li class="nav-item active">
+                                    <a href="javascript:;" onclick="editField(`+valueOfElement.id+`)" class="nav-link">
+                                        <i class="fas fa-inbox"></i> `+valueOfElement.name+`
+                                    </a>
+                                </li>`;
+                        });
+                        html += `</ul>`;
+                        $('#field').html(html);
+                    } else {
+                        $('#field').html(`<div class="text-center">data field is empty</div>`);
+                    }
+                    console.log(response);
+                }
+            });
         }
     </script>
 {% endblock %}
