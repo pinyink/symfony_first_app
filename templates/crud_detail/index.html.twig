@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-md-10">
-                <div class="card card-outline card-primary">
+                <div class="card card-outline card-primary" id="cardSetting">
                     <div class="card-body">
                         <form action="" id="formSetting">
                             <input type="hidden" name="id" value="">
@@ -132,7 +132,7 @@
             });
         }
 
-        function tambahField() {
+        function generateForm() {
             var html = `<div class="form-group">
                             <label>Name Property Entity</label>
                             <input type="text" class="form-control" name="nameField" required>
@@ -146,7 +146,29 @@
                     </div>
                     
                     <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> simpan</button>`;
+            return html;
+        }
+
+        function tambahField() {
+            var html = generateForm();
             $('#divField').html(html);
+        }
+
+        function editField(id) {
+            cardOverlayStart('cardSetting');
+            $.ajax({
+                type: "get",
+                url: "/crud/detail/"+id+"/edit",
+                dataType: "json",
+                success: function (response) {
+                    var html = generateForm();
+                    $('#divField').html(html);
+                    $('[name="id"]').val(id);
+                    $('[name="nameField"]').val(response.name);
+                    $('[name="typeField"]').val(response.type);
+                    cardOverlayStop('cardSetting');
+                }
+            });
         }
 
         $('#formSetting').submit(function (e) { 

@@ -46,6 +46,19 @@ class CrudDetailController extends AbstractController
         return $this->json($data);
     }
 
+    #[Route('/crud/detail/{id}/edit', name: 'app_crud_detail_edit', methods: ['GET'])]
+    public function edit(CrudDetail $crudDetail, int $id) 
+    {
+        $data = [
+            'id' => $crudDetail->getId(),
+            'name' => $crudDetail->getName(),
+            'crudName' => $crudDetail->getCrud()->getEntityName(),
+            'type' => $crudDetail->getType(),
+            'setting' => $crudDetail->getSetting()
+        ];
+        return $this->json($data);
+    }
+
     #[Route('/crud/detail/{id}/save', name:'app_crud_detail_save', methods:['POST'])]
     public function save(Request $request, EntityManagerInterface $em, int $id)
     {
