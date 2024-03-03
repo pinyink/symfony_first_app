@@ -72,12 +72,22 @@
 
         <div class="row">
             <div class="col-md-2">
-                <button class="btn btn-primary btn-block mb-1">Tambah Field</button>
+                <button class="btn btn-primary btn-block mb-1" onclick="tambahField()">Tambah Field</button>
                 <div class="card card-outline card-primary">
                     <div class="card-body">
                         <div id="field">
                             
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="card card-outline card-primary">
+                    <div class="card-body">
+                        <form action="" id="formSetting">
+                            <input type="hidden" name="id" value="">
+                            <div id="divField"></div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -109,7 +119,7 @@
                         $.each(response, function (indexInArray, valueOfElement) { 
                             html += `<li class="nav-item active">
                                     <a href="javascript:;" onclick="editField(`+valueOfElement.id+`)" class="nav-link">
-                                        <i class="fas fa-inbox"></i> `+valueOfElement.name+`
+                                        `+valueOfElement.name+`
                                     </a>
                                 </li>`;
                         });
@@ -118,9 +128,47 @@
                     } else {
                         $('#field').html(`<div class="text-center">data field is empty</div>`);
                     }
-                    console.log(response);
                 }
             });
         }
+
+        function tambahField() {
+            var html = `<div class="form-group">
+                            <label>Name Property Entity</label>
+                            <input type="text" class="form-control" name="nameField" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="typeField" class="form-control" required>
+                            <option value="">-</option>
+                            <option value="1">String</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> simpan</button>`;
+            $('#divField').html(html);
+        }
+
+        $('#formSetting').submit(function (e) { 
+            e.preventDefault();
+            $.ajax({
+                type: "post",
+                url: "{{ path('app_crud_detail_save', {id: crud.id}) }}",
+                data: $('#formSetting').serialize(),
+                dataType: "JSON",
+                success: function (response) {
+                    Swal.fire({
+                        title: "Notification !",
+                        text: response.message,
+                        icon: response.info
+                    }).then(function(e) {
+                        getField();
+                    });
+                },
+                error: function (jqXHR) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+        });
     </script>
 {% endblock %}

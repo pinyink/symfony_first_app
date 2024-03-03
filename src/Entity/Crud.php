@@ -25,11 +25,11 @@ class Crud
     private ?string $route_name = null;
 
     #[ORM\OneToMany(mappedBy: 'crud', targetEntity: CrudDetail::class)]
-    private Collection $field_name;
+    private Collection $crudDetails;
 
     public function __construct()
     {
-        $this->field_name = new ArrayCollection();
+        $this->crudDetails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,27 +76,27 @@ class Crud
     /**
      * @return Collection<int, CrudDetail>
      */
-    public function getFieldName(): Collection
+    public function getCrudDetails(): Collection
     {
-        return $this->field_name;
+        return $this->crudDetails;
     }
 
-    public function addFieldName(CrudDetail $fieldName): static
+    public function addCrudDetail(CrudDetail $crudDetail): static
     {
-        if (!$this->field_name->contains($fieldName)) {
-            $this->field_name->add($fieldName);
-            $fieldName->setCrud($this);
+        if (!$this->crudDetails->contains($crudDetail)) {
+            $this->crudDetails->add($crudDetail);
+            $crudDetail->setCrud($this);
         }
 
         return $this;
     }
 
-    public function removeFieldName(CrudDetail $fieldName): static
+    public function removeCrudDetail(CrudDetail $crudDetail): static
     {
-        if ($this->field_name->removeElement($fieldName)) {
+        if ($this->crudDetails->removeElement($crudDetail)) {
             // set the owning side to null (unless already changed)
-            if ($fieldName->getCrud() === $this) {
-                $fieldName->setCrud(null);
+            if ($crudDetail->getCrud() === $this) {
+                $crudDetail->setCrud(null);
             }
         }
 

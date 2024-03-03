@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Crud;
 use App\Entity\CrudDetail;
+use App\Repository\CrudDetailRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class CrudDetailController extends AbstractController
 {
@@ -26,15 +29,39 @@ class CrudDetailController extends AbstractController
     }
 
     #[Route('/crud/detail/{id}/fields', name:'app_crud_detail_fields', methods:['GET'])]
-    public function field(int $id, EntityManagerInterface $em)
+    public function fields(int $id, CrudDetailRepository $crudDetail, SerializerInterface $sr)
     {
-        $field = $em->getRepository(CrudDetail::class);
-        $fields = $field->findBy(['crud' => $id]);
-        if (!$fields) {
-            $data = [];
-            return $this->json($data);
+        $crud = $crudDetail->findBy(['crud' => $id]);
+        $data = [];
+        foreach ($crud as $key => $value) {
+            $array = [
+                'id' => $value->getId(),
+                'name' => $value->getName(),
+                'crudName' => $value->getCrud()->getEntityName(),
+                'type' => $value->getType(),
+                'setting' => $value->getSetting()
+            ];
+            array_push($data, $array);
         }
-        return $this->json($fields);
+        return $this->json($data);
+    }
+
+    #[Route('/crud/detail/{id}/save', name:'app_crud_detail_save', methods:['POST'])]
+    public function save(Request $request, EntityManagerInterface $em, int $id)
+    {
+        $data = $request->request->all();
+
+        $crud = $em->getRepository(Crud::class)->find($id);
+        $crudDetail = new CrudDetail();
+        $crudDetail->setName($data['nameField']);
+        $crudDetail->setType($data['typeField']);
+        $crudDetail->setCrud($crud);
+        $em->persist($crudDetail);
+        $em->flush();
+        return $this->json([
+            'info' => 'success',
+            'message' => 'Save Data Success'
+        ]);
     }
 
     #[Route(path: '/crud/detail/{id}/entity', name: 'app_crud_detail_entity', methods: ['GET'])]

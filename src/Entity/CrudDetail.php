@@ -13,53 +13,41 @@ class CrudDetail
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'crudDetails')]
-    private ?Crud $crud = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 64)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $type = null;
+    #[ORM\Column(length: 4)]
+    private ?string $type = null;
 
     #[ORM\Column(nullable: true)]
     private ?array $setting = null;
+
+    #[ORM\ManyToOne(inversedBy: 'crudDetails')]
+    private ?Crud $crud = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCrud(): ?Crud
-    {
-        return $this->crud;
-    }
-
-    public function setCrud(?Crud $crud): static
-    {
-        $this->crud = $crud;
-
-        return $this;
-    }
-
-    public function getFieldName(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setFieldName(string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getType(): ?int
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(int $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
@@ -74,6 +62,18 @@ class CrudDetail
     public function setSetting(?array $setting): static
     {
         $this->setting = $setting;
+
+        return $this;
+    }
+
+    public function getCrud(): ?Crud
+    {
+        return $this->crud;
+    }
+
+    public function setCrud(?Crud $crud): static
+    {
+        $this->crud = $crud;
 
         return $this;
     }
