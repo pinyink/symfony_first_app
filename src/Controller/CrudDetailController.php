@@ -10,7 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class CrudDetailController extends AbstractController
 {
@@ -29,7 +28,7 @@ class CrudDetailController extends AbstractController
     }
 
     #[Route('/crud/detail/{id}/fields', name:'app_crud_detail_fields', methods:['GET'])]
-    public function fields(int $id, CrudDetailRepository $crudDetail, SerializerInterface $sr)
+    public function fields(int $id, CrudDetailRepository $crudDetail)
     {
         $crud = $crudDetail->findBy(['crud' => $id]);
         $data = [];

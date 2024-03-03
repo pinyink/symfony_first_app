@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Crud;
+use App\Entity\CrudDetail;
 use App\Form\CrudType;
-use App\Repository\CrudRepository;
+use App\Service\CrudServicer;
 use App\Service\DataTableService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class CrudController extends AbstractController
 {
     #[Route('/', name: 'app_crud_index', methods: ['GET'])]
-    public function index(CrudRepository $crudRepository): Response
+    public function index(): Response
     {
         return $this->render('crud/index.html.twig', [
-            'cruds' => $crudRepository->findAll(),
         ]);
     }
 
@@ -106,5 +106,37 @@ class CrudController extends AbstractController
         }
 
         return $this->redirectToRoute('app_crud_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/generate', name: 'app_crud_generate', methods: ['GET'])]
+    public function generate(int $id, EntityManagerInterface $em, CrudServicer $cs)
+    {
+        $crud = $em->getRepository(Crud::class)->find($id);
+        $crudDetail = $em->getRepository(CrudDetail::class)->findBy(['crud' => $id]);
+        $fields = [];
+        foreach ($crudDetail as $key => $value) {
+            $array = [
+                'id' => $value->getId(),
+                'name' => $value->getName(),
+                'crudName' => $value->getCrud()->getEntityName(),
+                'type' => $value->getType(),
+                'setting' => $value->getSetting()
+            ];
+            array_push($fields, $array);
+        }
+        $dataGenerate = [
+            'crud' => [
+                'entity' => $crud->getEntityName()
+            ], 
+            'fields' => $fields
+        ];
+        $dir = dirname(__DIR__);
+
+        // generate controller
+        $cs->controller($dir, $dataGenerate);
+        return $this->json([
+            'dir' => $dir,
+            'data' => $dataGenerate
+        ]);
     }
 }
