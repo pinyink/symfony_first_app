@@ -86,6 +86,7 @@
                     <div class="card-body">
                         <form action="" id="formSetting">
                             <input type="hidden" name="id" value="">
+                            <input type="hidden" name="saveMethod" value="">
                             <div id="divField"></div>
                         </form>
                     </div>
@@ -150,11 +151,13 @@
         }
 
         function tambahField() {
+            $('[name="saveMethod"]').val('save');
             var html = generateForm();
             $('#divField').html(html);
         }
 
         function editField(id) {
+            $('[name="saveMethod"]').val('update');
             cardOverlayStart('cardSetting');
             $.ajax({
                 type: "get",

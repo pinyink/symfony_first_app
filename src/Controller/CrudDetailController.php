@@ -65,11 +65,18 @@ class CrudDetailController extends AbstractController
         $data = $request->request->all();
 
         $crud = $em->getRepository(Crud::class)->find($id);
-        $crudDetail = new CrudDetail();
+        if ($data['saveMethod'] == 'save') {
+            $crudDetail = new CrudDetail();
+        } else {
+            $crudDetail = $em->getRepository(CrudDetail::class)->find($data['id']);
+        }
+        
         $crudDetail->setName($data['nameField']);
         $crudDetail->setType($data['typeField']);
         $crudDetail->setCrud($crud);
-        $em->persist($crudDetail);
+        if ($data['saveMethod'] == 'save') {
+            $em->persist($crudDetail);
+        }
         $em->flush();
         return $this->json([
             'info' => 'success',
