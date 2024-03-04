@@ -126,14 +126,18 @@ class CrudController extends AbstractController
         }
         $dataGenerate = [
             'crud' => [
-                'entity' => $crud->getEntityName()
+                'entity' => $crud->getEntityName(),
+                'form' => $crud->getFormName()
             ], 
             'fields' => $fields
         ];
         $dir = dirname(__DIR__);
 
         // generate controller
-        $cs->controller($dir, $dataGenerate);
+        // $cs->controller($dir, $dataGenerate);
+
+        // generate form
+        $cs->type($dir, $dataGenerate);
         return $this->json([
             'dir' => $dir,
             'data' => $dataGenerate
