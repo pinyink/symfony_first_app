@@ -140,7 +140,9 @@ class CrudController extends AbstractController
         $cs->type($dir, $dataGenerate);
         // generate twig
         $ctg = new \App\Service\CrudTwigServicer();
-        $ctg->index($dataGenerate);
+        $ctg->setDir($dir);
+        $ctg->setData($dataGenerate);
+        $ctg->index();
         return $this->json([
             'dir' => $dir,
             'data' => $dataGenerate
