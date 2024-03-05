@@ -24,19 +24,22 @@ class ProductController extends AbstractController
 	#[Route(path: '/product_ajax', name: 'app_product_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
-        $dataTable->setColumnOrder(['id', 'nama', 'harga']);
+        $dataTable->setColumnOrder([null, null, 'nama', 'harga']);
         $dataTable->setColumnSearch(['id', 'nama', 'harga']);
         $dataTable->setTable('product');
         $dataTable->setQuery('select * from product');
         $queryResult = $dataTable->getData($entityManager, $request);
         $data = [];
+        $params = $request->request->all();
+        $no = isset($params['start']) ? $params['start'] : 1;
         foreach ($queryResult['data'] as $key => $value) {
             $row = array();
-            $row[] = $value['id'];
+            $row[] = $no;
+            $row[] = "<a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'>edit</a>";
 			$row[] = $value['nama'];
 			$row[] = $value['harga'];
-            $row[] = "<a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-info'>edit</a>";
             $data[] = $row;
+            $no++;
         }
         $output = [
             "draw" => 0,
@@ -47,9 +50,10 @@ class ProductController extends AbstractController
         return $this->json($output);
     }
 
-	#[Route(path: '/product_new', name: 'app_product_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Product $product, EntityManagerInterface $entityManager): Response
+	#[Route(path: '/product/new', name: 'app_product_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $product = new Product;
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

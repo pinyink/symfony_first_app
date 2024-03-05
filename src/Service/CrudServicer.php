@@ -30,28 +30,34 @@ class ".$data['crud']['entity']."Controller extends AbstractController
     }";
 
     $fieldDatatable = '';
-    $arrayDatatable = "['id'";
+    $searchDatatable = "['id'";
+    $orderDatatable = "[null, null";
     foreach ($data['fields'] as $key => $value) {
         if ($value['datatable'] == 1) {
             $fieldDatatable .= "\n\t\t\t\$row[] = \$value['".$value['name']."'];";
-            $arrayDatatable .= ", '".$value['name']."'";
+            $searchDatatable .= ", '".$value['name']."'";
+            $orderDatatable .= ", '".$value['name']."'";
         }
     }
-    $arrayDatatable .= "]";
+    $searchDatatable .= "]";
+    $orderDatatable .= "]";
 $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_".$data['crud']['route']."_ajax', methods: ['POST'])]
     public function ajax(DataTableService \$dataTable, EntityManagerInterface \$entityManager, Request \$request) : Response
     {
-        \$dataTable->setColumnOrder(".$arrayDatatable.");
-        \$dataTable->setColumnSearch(".$arrayDatatable.");
+        \$dataTable->setColumnOrder(".$orderDatatable.");
+        \$dataTable->setColumnSearch(".$searchDatatable.");
         \$dataTable->setTable('".strtolower($data['crud']['entity'])."');
         \$dataTable->setQuery('select * from ".strtolower($data['crud']['entity'])."');
         \$queryResult = \$dataTable->getData(\$entityManager, \$request);
         \$data = [];
+        \$params = \$request->request->all();
+        \$no = isset(\$params['start']) ? \$params['start'] : 1;
         foreach (\$queryResult['data'] as \$key => \$value) {
             \$row = array();
-            \$row[] = \$value['id'];".$fieldDatatable."
-            \$row[] = \"<a href='\".\$this->generateUrl('app_".$data['crud']['route']."_edit', ['id' => \$value['id']]).\"' class='btn btn-info'>edit</a>\";
+            \$row[] = \$no;
+            \$row[] = \"<a href='\".\$this->generateUrl('app_".$data['crud']['route']."_edit', ['id' => \$value['id']]).\"' class='btn btn-sm btn-info'>edit</a>\";".$fieldDatatable."
             \$data[] = \$row;
+            \$no++;
         }
         \$output = [
             \"draw\" => 0,
@@ -61,9 +67,10 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_"
         ];
         return \$this->json(\$output);
     }";
-$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
-    public function new(Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity']).", EntityManagerInterface \$entityManager): Response
+$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
+    public function new(Request \$request, EntityManagerInterface \$entityManager): Response
     {
+        \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity'].";
         \$form = \$this->createForm(".$data['crud']['form']."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
         if (\$form->isSubmitted() && \$form->isValid()) {

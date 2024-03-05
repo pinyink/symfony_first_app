@@ -1,0 +1,110 @@
+{% extends 'adminlte.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css" integrity="sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css" integrity="sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Product</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Product</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Data Product</h3>
+                <div class="card-tools">
+                    <a href="{{ path('app_product_new')}}" class="btn btn-tool">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-hover" id="example">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">No</th>
+                            <th style="width: 10%;">actions</th>
+							<th style="width: 42.5">nama</th>
+							<th style="width: 42.5">harga</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js" integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/dataTables.bootstrap4.min.js" integrity="sha512-OQlawZneA7zzfI6B1n1tjUuo3C5mtYuAWpQdg+iI9mkDoo7iFzTqnQHf+K5ThOWNJ9AbXL4+ZDwH7ykySPQc+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $(document).ready(function () {
+            table = $('#example').DataTable({
+                scrollCollapse: true,
+                responsive: true,
+                autoWidth: false,
+                language: { search: "",
+                    searchPlaceholder: "Search",
+                    sLengthMenu: "_MENU_items"
+                },
+                "order": [],
+                "ajax": {
+                    "url": " {{ path('app_product_ajax') }}",
+                    "headers": {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    "type": "POST",
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR.responseText);
+                    }
+                },
+                //optional
+                "columnDefs": [{
+                    "targets": [0, 1],
+                    "orderable": false,
+                }, ],
+            });
+        });
+        
+        function reload_table() {
+            table.ajax.reload(null, false);
+        }
+    </script>
+{% endblock %}
+        
