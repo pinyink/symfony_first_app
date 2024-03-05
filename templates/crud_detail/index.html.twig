@@ -138,12 +138,24 @@
                             <label>Name Property Entity</label>
                             <input type="text" class="form-control" name="nameField" required>
                     </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select name="typeField" class="form-control" required>
-                            <option value="">-</option>
-                            <option value="1">String</option>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select name="typeField" class="form-control" required>
+                                    <option value="">-</option>
+                                    <option value="1">String</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label">view table</label>
+                            <select class="form-control" name="datatableField">
+                                <option value=""></option>
+                                <option value="1">Ya</option>
+                                <option value="2">Tidak</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> simpan</button>`;
@@ -169,6 +181,7 @@
                     $('[name="id"]').val(id);
                     $('[name="nameField"]').val(response.name);
                     $('[name="typeField"]').val(response.type);
+                    $('[name="datatableField"]').val(response.datatable);
                     cardOverlayStop('cardSetting');
                 }
             });

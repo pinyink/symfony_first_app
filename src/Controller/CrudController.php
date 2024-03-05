@@ -120,24 +120,27 @@ class CrudController extends AbstractController
                 'name' => $value->getName(),
                 'crudName' => $value->getCrud()->getEntityName(),
                 'type' => $value->getType(),
-                'setting' => $value->getSetting()
+                'setting' => $value->getSetting(),
+                'datatable' => $value->getDatatable()
             ];
             array_push($fields, $array);
         }
         $dataGenerate = [
             'crud' => [
                 'entity' => $crud->getEntityName(),
-                'form' => $crud->getFormName()
+                'form' => $crud->getFormName(),
+                'route' => $crud->getRouteName()
             ], 
             'fields' => $fields
         ];
         $dir = dirname(__DIR__);
-
         // generate controller
-        // $cs->controller($dir, $dataGenerate);
-
+        $cs->controller($dir, $dataGenerate);
         // generate form
         $cs->type($dir, $dataGenerate);
+        // generate twig
+        $ctg = new \App\Service\CrudTwigServicer();
+        $ctg->index($dataGenerate);
         return $this->json([
             'dir' => $dir,
             'data' => $dataGenerate

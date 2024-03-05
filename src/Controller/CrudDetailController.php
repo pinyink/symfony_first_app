@@ -53,7 +53,8 @@ class CrudDetailController extends AbstractController
             'name' => $crudDetail->getName(),
             'crudName' => $crudDetail->getCrud()->getEntityName(),
             'type' => $crudDetail->getType(),
-            'setting' => $crudDetail->getSetting()
+            'setting' => $crudDetail->getSetting(),
+            'datatable' => $crudDetail->getDatatable()
         ];
         return $this->json($data);
     }
@@ -67,12 +68,13 @@ class CrudDetailController extends AbstractController
         if ($data['saveMethod'] == 'save') {
             $crudDetail = new CrudDetail();
         } else {
+            $crudDetail = new CrudDetail();
             $crudDetail = $em->getRepository(CrudDetail::class)->find($data['id']);
         }
-        
         $crudDetail->setName($data['nameField']);
         $crudDetail->setType($data['typeField']);
         $crudDetail->setCrud($crud);
+        $crudDetail->setDatatable($data['datatableField']);
         if ($data['saveMethod'] == 'save') {
             $em->persist($crudDetail);
         }

@@ -25,6 +25,9 @@ class CrudDetail
     #[ORM\ManyToOne(inversedBy: 'crudDetails')]
     private ?Crud $crud = null;
 
+    #[ORM\Column]
+    private ?int $datatable = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class CrudDetail
     public function setCrud(?Crud $crud): static
     {
         $this->crud = $crud;
+
+        return $this;
+    }
+
+    public function getDatatable(): ?int
+    {
+        return $this->datatable;
+    }
+
+    public function setDatatable(int $datatable): static
+    {
+        $this->datatable = $datatable;
 
         return $this;
     }
