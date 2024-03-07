@@ -82,7 +82,8 @@
                 </div>
             </div>
             <div class="col-md-10">
-                <div class="card card-outline card-primary" id="cardSetting">
+                <button type="button" class="btn btn-primary" onclick="generate()" id="btnGenerate"><i class="fa fa-edit"></i> Generate</button>
+                <div class="card card-outline card-primary mt-1" id="cardSetting">
                     <div class="card-body">
                         <form action="" id="formSetting">
                             <input type="hidden" name="id" value="">
@@ -208,5 +209,23 @@
                 }
             });
         });
+
+        function generate() {
+            btnLoadingStart('btnGenerate');
+            $.ajax({
+                type: "GET",
+                url: "{{ path('app_crud_generate', {id : crud.id}) }}",
+                dataType: "json",
+                success: function (response) {
+                    Swal.fire({
+                        title: "Notification !",
+                        text: response.message,
+                        icon: response.info
+                    }).then(function (e) {
+                        btnLoadingStop('btnGenerate');
+                    });;
+                }
+            });
+        }
     </script>
 {% endblock %}

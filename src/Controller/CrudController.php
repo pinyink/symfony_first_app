@@ -143,9 +143,12 @@ class CrudController extends AbstractController
         $ctg->setDir($dir);
         $ctg->setData($dataGenerate);
         $ctg->index();
+        
         return $this->json([
             'dir' => $dir,
-            'data' => $dataGenerate
+            'data' => $dataGenerate,
+            'info' => 'success',
+            'message' => 'generate crud berhasil'
         ]);
     }
 }

@@ -69,6 +69,17 @@
             function cardOverlayStop(id) {
                 $('#'+id+' .overlay').remove();
             }
+
+            var tmpBtn;
+            function btnLoadingStart(id) {
+                var html = $('#'+id).html();
+                tmpBtn = html;
+                $('#'+id).html('<i class="fas fa-sync-alt fa-spin"></i> Loading');
+            }
+
+            function btnLoadingStop(id) {
+                $('#'+id).html(tmpBtn);
+            }
         </script>
         
         {% block javascripts %}
