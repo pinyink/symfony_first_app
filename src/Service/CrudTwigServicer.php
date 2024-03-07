@@ -19,6 +19,7 @@ class CrudTwigServicer
         $this->createEdit();
         $this->createForm();
         $this->createShow();
+        $this->createDelete();
         return $this;
     }
 
@@ -329,7 +330,10 @@ class CrudTwigServicer
             <div class=\"card-body\">
                 ".$table."
             </div>
-
+            <div class=\"card-footer\">
+                <a href=\"{{ path('app_".$this->data['crud']['route']."_edit', { 'id' : ".strtolower($this->data['crud']['entity']).".id}) }}\" class=\"btn btn-info btn-sm pull-right\"><i class=\"fa fa-edit\"></i> edit</a>
+                {{ include('".$this->data['crud']['route']."/_delete_form.html.twig') }}
+            </div>
         </div>
 
     </section>
@@ -345,6 +349,20 @@ class CrudTwigServicer
 {% endblock %}
         ";
         $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/show.html.twig';
+        $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
+        fwrite($create, $string);
+        fclose($create);
+        return $this;
+    }
+
+    private function createDelete() : static 
+    {
+    $string = "<form method=\"post\" action=\"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\" onsubmit=\"return confirm('Are you sure you want to delete this item?');\">
+    <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete' ~ ".strtolower($this->data['crud']['entity']).".id) }}\">
+    <button class=\"btn btn-danger btn-sm\"><i class=\"fa fa-trash\"></i>Delete</button>
+</form>
+";
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/_delete_form.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);

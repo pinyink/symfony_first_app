@@ -50,7 +50,7 @@ class ProductController extends AbstractController
         return $this->json($output);
     }
 
-	#[Route('/product/{id}', name: 'app_product_show', methods: ['GET'])]
+	#[Route('/product/{id}/show', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
         return $this->render('product/show.html.twig', [
@@ -61,7 +61,7 @@ class ProductController extends AbstractController
 	#[Route(path: '/product/new', name: 'app_product_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $product = new Product;
+        $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -97,5 +97,16 @@ class ProductController extends AbstractController
             'product' => $product,
             'form' => $form
         ]);
+    }
+
+	#[Route('/product/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
+    public function delete(EntityManagerInterface $entityManager, Request $request, Product $product): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($product);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_product', [], Response::HTTP_SEE_OTHER);
     }
 }

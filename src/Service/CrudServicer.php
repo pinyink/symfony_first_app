@@ -68,7 +68,7 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_"
         return \$this->json(\$output);
     }";
 
-$string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}', name: 'app_".$data['crud']['route']."_show', methods: ['GET'])]
+$string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".$data['crud']['route']."_show', methods: ['GET'])]
     public function show(".$data['crud']['entity']." \$".strtolower($data['crud']['entity'])."): Response
     {
         return \$this->render('".$data['crud']['route']."/show.html.twig', [
@@ -79,7 +79,7 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}', name: 'app_".$data
 $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
     public function new(Request \$request, EntityManagerInterface \$entityManager): Response
     {
-        \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity'].";
+        \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity']."();
         \$form = \$this->createForm(".$data['crud']['form']."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
         if (\$form->isSubmitted() && \$form->isValid()) {
@@ -114,6 +114,17 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".
             '".$data['crud']['route']."' => \$".$data['crud']['route'].",
             'form' => \$form
         ]);
+    }";
+
+    $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/delete', name: 'app_".$data['crud']['route']."_delete', methods: ['POST'])]
+    public function delete(EntityManagerInterface \$entityManager, Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity'])."): Response
+    {
+        if (\$this->isCsrfTokenValid('delete'.\$".strtolower($data['crud']['entity'])."->getId(), \$request->request->get('_token'))) {
+            \$entityManager->remove(\$".strtolower($data['crud']['entity']).");
+            \$entityManager->flush();
+        }
+
+        return \$this->redirectToRoute('app_".$data['crud']['route']."', [], Response::HTTP_SEE_OTHER);
     }";
 $string .= "\n}";
         $path = $dir.'/Controller/'.$data['crud']['entity'].'Controller.php';
