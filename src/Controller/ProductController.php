@@ -107,6 +107,9 @@ class ProductController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_product', [], Response::HTTP_SEE_OTHER);
+        return $this->json([
+            "info" => "success",
+            "message" => "Delete Data Berhasil"
+        ]);
     }
 }

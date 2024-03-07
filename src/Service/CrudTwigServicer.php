@@ -330,7 +330,7 @@ class CrudTwigServicer
             <div class=\"card-body\">
                 ".$table."
             </div>
-            <div class=\"card-footer\">
+            <div class=\"card-footer d-flex\" style=\"gap: 5px;\">
                 <a href=\"{{ path('app_".$this->data['crud']['route']."_edit', { 'id' : ".strtolower($this->data['crud']['entity']).".id}) }}\" class=\"btn btn-info btn-sm pull-right\"><i class=\"fa fa-edit\"></i> edit</a>
                 {{ include('".$this->data['crud']['route']."/_delete_form.html.twig') }}
             </div>
@@ -343,9 +343,38 @@ class CrudTwigServicer
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        
-    </script>
+<script>
+$('#formDelete').submit(function (e) { 
+    e.preventDefault();
+    Swal.fire({
+        title: \"Are you sure?\",
+        text: \"You won't be able to revert this!\",
+        icon: \"warning\",
+        showCancelButton: true,
+        confirmButtonColor: \"#3085d6\",
+        cancelButtonColor: \"#d33\",
+        confirmButtonText: \"Yes, delete it!\"
+        }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            type: \"POST\",
+            url: \"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\",
+            data: $('#formDelete').serialize(),
+            dataType: \"JSON\",
+            success: function (response) {
+                Swal.fire({
+                    title: \"Notification !\",
+                    text: response.message,
+                    icon: response.info
+                }).then(function (e) {
+                    window.location.href = \"{{ path('app_".$this->data['crud']['route']."') }}\";
+                });;
+            }
+        });
+        }
+    });
+});
+</script>
 {% endblock %}
         ";
         $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/show.html.twig';
@@ -357,7 +386,7 @@ class CrudTwigServicer
 
     private function createDelete() : static 
     {
-    $string = "<form method=\"post\" action=\"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\" onsubmit=\"return confirm('Are you sure you want to delete this item?');\">
+    $string = "<form method=\"post\" action=\"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\" id=\"formDelete\">
     <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete' ~ ".strtolower($this->data['crud']['entity']).".id) }}\">
     <button class=\"btn btn-danger btn-sm\"><i class=\"fa fa-trash\"></i>Delete</button>
 </form>

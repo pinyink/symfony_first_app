@@ -124,7 +124,10 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".
             \$entityManager->flush();
         }
 
-        return \$this->redirectToRoute('app_".$data['crud']['route']."', [], Response::HTTP_SEE_OTHER);
+        return \$this->json([
+            \"info\" => \"success\",
+            \"message\" => \"Delete Data Berhasil\"
+        ]);
     }";
 $string .= "\n}";
         $path = $dir.'/Controller/'.$data['crud']['entity'].'Controller.php';
