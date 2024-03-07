@@ -18,6 +18,7 @@ class CrudTwigServicer
         $this->createNew();
         $this->createEdit();
         $this->createForm();
+        $this->createShow();
         return $this;
     }
 
@@ -254,14 +255,96 @@ class CrudTwigServicer
         ";
         return $string;
     }
-
+    
     private function createForm() : static
     {
-        $string = "{{ form_start(form) }}
-    {{ form_widget(form) }}
+        $formRow = "";
+        foreach ($this->data['fields'] as $key => $value) {
+            $formRow .= "\n\t{{ form_row(form.".$value['name'].") }}";
+        }
+        $string = "{{ form_start(form) }}".$formRow."
     <button class=\"btn btn-primary\">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}";
         $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/_form.html.twig';
+        $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
+        fwrite($create, $string);
+        fclose($create);
+        return $this;
+    }
+
+    private function createShow() : static
+    {
+        $table = "<table class=\"table\">";
+        foreach ($this->data['fields'] as $key => $value) {
+            $table .= "<tr>
+                <td>".$value['name']."</td>
+                <td>:</td>
+                <td>{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
+            </tr>";
+        }
+        $table .= "</table>";
+        $string = "{% extends 'adminlte.html.twig' %}
+
+{% block title %}".$this->data['crud']['entity']."{% endblock %}
+
+{% block stylesheets %}
+    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css\" integrity=\"sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
+    
+    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css\" integrity=\"sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
+{% endblock %}
+
+{% block body %}
+<div class=\"content-wrapper\">
+
+    <section class=\"content-header\">
+        <div class=\"container-fluid\">
+            <div class=\"row mb-2\">
+                <div class=\"col-sm-6\">
+                    <h1>".$this->data['crud']['entity']."</h1>
+                </div>
+                <div class=\"col-sm-6\">
+                    <ol class=\"breadcrumb float-sm-right\">
+                        <li class=\"breadcrumb-item\"><a href=\"#\">Home</a></li>
+                        <li class=\"breadcrumb-item\">".$this->data['crud']['entity']."</li>
+                        <li class=\"breadcrumb-item active\">Lihat</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class=\"content\">
+        <div class=\"card\">
+            <div class=\"card-header\">
+                <h3 class=\"card-title\">Data ".$this->data['crud']['entity']."</h3>
+                <div class=\"card-tools\">
+                    <a href=\"{{ path('app_".$this->data['crud']['route']."')}}\" class=\"btn btn-tool\">
+                        <i class=\"fas fa-list\"></i>
+                    </a>
+                    <button type=\"button\" class=\"btn btn-tool\" data-card-widget=\"remove\" title=\"Remove\">
+                        <i class=\"fas fa-times\"></i>
+                    </button>
+                </div>
+            </div>
+            <div class=\"card-body\">
+                ".$table."
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        
+    </script>
+{% endblock %}
+        ";
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/show.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);

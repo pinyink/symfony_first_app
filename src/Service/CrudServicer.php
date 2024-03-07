@@ -55,7 +55,7 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_"
         foreach (\$queryResult['data'] as \$key => \$value) {
             \$row = array();
             \$row[] = \$no;
-            \$row[] = \"<a href='\".\$this->generateUrl('app_".$data['crud']['route']."_edit', ['id' => \$value['id']]).\"' class='btn btn-sm btn-info'>edit</a>\";".$fieldDatatable."
+            \$row[] = \"<a href='\".\$this->generateUrl('app_".$data['crud']['route']."_show', ['id' => \$value['id']]).\"' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='\".\$this->generateUrl('app_".$data['crud']['route']."_edit', ['id' => \$value['id']]).\"' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>\";".$fieldDatatable."
             \$data[] = \$row;
             \$no++;
         }
@@ -67,6 +67,15 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_"
         ];
         return \$this->json(\$output);
     }";
+
+$string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}', name: 'app_".$data['crud']['route']."_show', methods: ['GET'])]
+    public function show(".$data['crud']['entity']." \$".strtolower($data['crud']['entity'])."): Response
+    {
+        return \$this->render('".$data['crud']['route']."/show.html.twig', [
+            '".strtolower($data['crud']['entity'])."' => \$".strtolower($data['crud']['entity']).",
+        ]);
+    }";
+
 $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
     public function new(Request \$request, EntityManagerInterface \$entityManager): Response
     {

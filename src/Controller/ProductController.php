@@ -35,7 +35,7 @@ class ProductController extends AbstractController
         foreach ($queryResult['data'] as $key => $value) {
             $row = array();
             $row[] = $no;
-            $row[] = "<a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'>edit</a>";
+            $row[] = "<a href='".$this->generateUrl('app_product_show', ['id' => $value['id']])."' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>";
 			$row[] = $value['nama'];
 			$row[] = $value['harga'];
             $data[] = $row;
@@ -48,6 +48,14 @@ class ProductController extends AbstractController
             "data" => $data,
         ];
         return $this->json($output);
+    }
+
+	#[Route('/product/{id}', name: 'app_product_show', methods: ['GET'])]
+    public function show(Product $product): Response
+    {
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+        ]);
     }
 
 	#[Route(path: '/product/new', name: 'app_product_new', methods: ['GET', 'POST'])]
