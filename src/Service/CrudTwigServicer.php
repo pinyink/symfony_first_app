@@ -41,7 +41,7 @@ class CrudTwigServicer
         $arrayTable = [];
         foreach ($this->data['fields'] as $key => $value) {
             if ($value['datatable'] == 1) {
-                array_push($arrayTable, $value['name']);
+                array_push($arrayTable, $value['label']);
             }
         }
         // calculate width with count fields 
@@ -269,9 +269,9 @@ class CrudTwigServicer
         $table = "<table class=\"table\">";
         foreach ($this->data['fields'] as $key => $value) {
             $table .= "<tr>
-                <td>".$value['name']."</td>
-                <td>:</td>
-                <td>{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
+                <td style=\"width: 20%\">".$value['label']."</td>
+                <td style=\"width: 5%;\">:</td>
+                <td style=\"width: 75%;\">{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
             </tr>";
         }
         $table .= "</table>";

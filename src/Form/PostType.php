@@ -2,13 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Categories;
+use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class CategoriesType extends AbstractType
+class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -16,11 +17,14 @@ class CategoriesType extends AbstractType
 			->add('url', TextType::class, [
                 'label' => 'URL'
             ])
-			->add('name', TextType::class, [
-                'label' => 'Name'
+			->add('title', TextType::class, [
+                'label' => 'Title'
             ])
-			->add('summary', TextType::class, [
+			->add('summary', TextareaType::class, [
                 'label' => 'Summary'
+            ])
+			->add('content', TextareaType::class, [
+                'label' => 'Content'
             ])
         ;
     }
@@ -28,7 +32,7 @@ class CategoriesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Categories::class,
+            'data_class' => Post::class,
         ]);
     }
 }

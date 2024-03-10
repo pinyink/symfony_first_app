@@ -135,9 +135,19 @@
         }
 
         function generateForm() {
-            var html = `<div class="form-group">
-                            <label>Name Property Entity</label>
-                            <input type="text" class="form-control" name="nameField" required>
+            var html = `<div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Name Property Entity</label>
+                                <input type="text" class="form-control" name="nameField" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Label</label>
+                                <input type="text" class="form-control" name="labelField" required>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
@@ -146,6 +156,7 @@
                                 <select name="typeField" class="form-control" required>
                                     <option value="">-</option>
                                     <option value="1">String</option>
+                                    <option value="2">Textarea</option>
                                 </select>
                             </div>
                         </div>
@@ -183,6 +194,7 @@
                     $('[name="nameField"]').val(response.name);
                     $('[name="typeField"]').val(response.type);
                     $('[name="datatableField"]').val(response.datatable);
+                    $('[name="labelField"]').val(response.label);
                     cardOverlayStop('cardSetting');
                 }
             });
@@ -202,6 +214,7 @@
                         icon: response.info
                     }).then(function(e) {
                         getField();
+                        $('#formSetting')[0].reset();
                     });
                 },
                 error: function (jqXHR) {

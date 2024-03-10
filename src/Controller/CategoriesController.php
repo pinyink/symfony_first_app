@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Categories;
 use App\Form\CategoriesType;
-use App\Repository\CategoriesRepository;
 use App\Service\DataTableService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,34 +10,35 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/categories')]
 class CategoriesController extends AbstractController
 {
-    #[Route('/', name: 'app_categories_index', methods: ['GET'])]
-    public function index(CategoriesRepository $categoriesRepository): Response
+    #[Route('/categories', name: 'app_categories')]
+    public function index(): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         return $this->render('categories/index.html.twig', [
-            'categories' => $categoriesRepository->findAll(),
         ]);
     }
 
-    #[Route(path: '/categories_ajax', name: 'app_categories_ajax', methods: ['GET', 'POST'])]
+	#[Route(path: '/categories_ajax', name: 'app_categories_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
-        $dataTable->setColumnOrder(['id', 'url', 'name', 'summary']);
+        $dataTable->setColumnOrder([null, null, 'url', 'name', 'summary']);
         $dataTable->setColumnSearch(['id', 'url', 'name', 'summary']);
         $dataTable->setTable('categories');
         $dataTable->setQuery('select * from categories');
         $queryResult = $dataTable->getData($entityManager, $request);
         $data = [];
-        $no = 1;
+        $params = $request->request->all();
+        $no = isset($params['start']) ? $params['start'] : 1;
         foreach ($queryResult['data'] as $key => $value) {
             $row = array();
             $row[] = $no;
-            $row[] = $value['url'];
-            $row[] = $value['name'];
-            $row[] = $value['summary'];
-            $row[] = "<a href='".$this->generateUrl('app_categories_edit', ['id' => $value['id']])."' class='btn btn-info btn-sm'>edit</a>";
+            $row[] = "<a href='".$this->generateUrl('app_categories_show', ['id' => $value['id']])."' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='".$this->generateUrl('app_categories_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>";
+			$row[] = $value['url'];
+			$row[] = $value['name'];
+			$row[] = $value['summary'];
             $data[] = $row;
             $no++;
         }
@@ -52,60 +51,66 @@ class CategoriesController extends AbstractController
         return $this->json($output);
     }
 
-    #[Route('/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $category = new Categories();
-        $form = $this->createForm(CategoriesType::class, $category);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($category);
-            $entityManager->flush();
-            $this->addFlash('success', 'Data Berhasil Di Simpan');
-            return $this->redirectToRoute('app_categories_edit', ['id' => $category->getId()], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('categories/new.html.twig', [
-            'category' => $category,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
-    public function show(Categories $category): Response
+	#[Route('/categories/{id}/show', name: 'app_categories_show', methods: ['GET'])]
+    public function show(Categories $categories): Response
     {
         return $this->render('categories/show.html.twig', [
-            'category' => $category,
+            'categories' => $categories,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
+	#[Route(path: '/categories/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CategoriesType::class, $category);
+        $categories = new Categories();
+        $form = $this->createForm(CategoriesType::class, $categories);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($categories);
+            $entityManager->flush();
+            $this->addFlash('success', 'Simpan Data Berhasil');
+            return $this->redirectToRoute('app_categories_edit', ['id' => $categories->getId()], Response::HTTP_SEE_OTHER);
+        }
+        return $this->render('categories/new.html.twig', [
+            'categories' => $categories,
+            'form' => $form
+        ]);
+    }
+
+	#[Route('/categories/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Categories $categories, int $id, EntityManagerInterface $entityManager): Response
+    {
+        if (!$categories) {
+            throw $this->createNotFoundException(
+                'No Categories found for id '.$id
+            );
+        }
+        $form = $this->createForm(categoriestype::class, $categories);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'Data Berhasil Di Simpan');
-            return $this->redirectToRoute('app_categories_edit', ['id' => $category->getId()], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Edit Data Berhasil');
+            return $this->redirectToRoute('app_categories_edit', ['id' => $categories->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('categories/edit.html.twig', [
-            'category' => $category,
-            'form' => $form,
+            'categories' => $categories,
+            'form' => $form
         ]);
     }
 
-    #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
-    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
+	#[Route('/categories/{id}/delete', name: 'app_categories_delete', methods: ['POST'])]
+    public function delete(EntityManagerInterface $entityManager, Request $request, Categories $categories): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($category);
+        if ($this->isCsrfTokenValid('delete'.$categories->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($categories);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
+        return $this->json([
+            "info" => "success",
+            "message" => "Delete Data Berhasil"
+        ]);
     }
 }

@@ -1,6 +1,6 @@
 {% extends 'adminlte.html.twig' %}
 
-{% block title %}Categories{% endblock %}
+{% block title %}Post{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css" integrity="sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -15,12 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Categories</h1>
+                    <h1>Post</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item">Categories</li>
+                        <li class="breadcrumb-item">Post</li>
                         <li class="breadcrumb-item active">Lihat</li>
                     </ol>
                 </div>
@@ -31,9 +31,9 @@
     <section class="content">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Data Categories</h3>
+                <h3 class="card-title">Data Post</h3>
                 <div class="card-tools">
-                    <a href="{{ path('app_categories')}}" class="btn btn-tool">
+                    <a href="{{ path('app_post')}}" class="btn btn-tool">
                         <i class="fas fa-list"></i>
                     </a>
                     <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
@@ -45,20 +45,24 @@
                 <table class="table"><tr>
                 <td style="width: 20%">URL</td>
                 <td style="width: 5%;">:</td>
-                <td style="width: 75%;">{{ categories.url }}</td>
+                <td style="width: 75%;">{{ post.url }}</td>
             </tr><tr>
-                <td style="width: 20%">Name</td>
+                <td style="width: 20%">Title</td>
                 <td style="width: 5%;">:</td>
-                <td style="width: 75%;">{{ categories.name }}</td>
+                <td style="width: 75%;">{{ post.title }}</td>
             </tr><tr>
                 <td style="width: 20%">Summary</td>
                 <td style="width: 5%;">:</td>
-                <td style="width: 75%;">{{ categories.summary }}</td>
+                <td style="width: 75%;">{{ post.summary }}</td>
+            </tr><tr>
+                <td style="width: 20%">Content</td>
+                <td style="width: 5%;">:</td>
+                <td style="width: 75%;">{{ post.content }}</td>
             </tr></table>
             </div>
             <div class="card-footer d-flex" style="gap: 5px;">
-                <a href="{{ path('app_categories_edit', { 'id' : categories.id}) }}" class="btn btn-info btn-sm pull-right"><i class="fa fa-edit"></i> edit</a>
-                {{ include('categories/_delete_form.html.twig') }}
+                <a href="{{ path('app_post_edit', { 'id' : post.id}) }}" class="btn btn-info btn-sm pull-right"><i class="fa fa-edit"></i> edit</a>
+                {{ include('post/_delete_form.html.twig') }}
             </div>
         </div>
 
@@ -84,7 +88,7 @@ $('#formDelete').submit(function (e) {
         if (result.isConfirmed) {
             $.ajax({
             type: "POST",
-            url: "{{ path('app_categories_delete', {'id': categories.id}) }}",
+            url: "{{ path('app_post_delete', {'id': post.id}) }}",
             data: $('#formDelete').serialize(),
             dataType: "JSON",
             success: function (response) {
@@ -93,7 +97,7 @@ $('#formDelete').submit(function (e) {
                     text: response.message,
                     icon: response.info
                 }).then(function (e) {
-                    window.location.href = "{{ path('app_categories') }}";
+                    window.location.href = "{{ path('app_post') }}";
                 });;
             }
         });

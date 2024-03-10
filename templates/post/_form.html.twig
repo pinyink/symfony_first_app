@@ -1,6 +1,7 @@
 {{ form_start(form) }}
 	{{ form_row(form.url) }}
-	{{ form_row(form.name) }}
+	{{ form_row(form.title) }}
 	{{ form_row(form.summary) }}
+	{{ form_row(form.content) }}
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

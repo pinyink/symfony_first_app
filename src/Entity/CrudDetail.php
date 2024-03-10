@@ -28,6 +28,9 @@ class CrudDetail
     #[ORM\Column]
     private ?int $datatable = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $label = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +92,18 @@ class CrudDetail
     public function setDatatable(int $datatable): static
     {
         $this->datatable = $datatable;
+
+        return $this;
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): static
+    {
+        $this->label = $label;
 
         return $this;
     }

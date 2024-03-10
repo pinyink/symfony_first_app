@@ -141,11 +141,24 @@ $string .= "\n}";
     {
         // generate form
         $form = "";
+        $arrayUse = [];
         foreach ($data['fields'] as $key => $value) {
             if ($value['type'] == 1) {
-                $form .= "\n\t\t\t->add('".$value['name']."')";
+                $form .= "\n\t\t\t->add('".$value['name']."', TextType::class, [
+                'label' => '".$value['label']."'
+            ])";
+                array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\TextType;');
+            }
+            if ($value['type'] == 2) {
+                $form .= "\n\t\t\t->add('".$value['name']."', TextareaType::class, [
+                'label' => '".$value['label']."'
+            ])";
+                array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\TextareaType;');
             }
         }
+        $arrayUseUnique = array_unique($arrayUse);
+        $stringUse = implode("\n", $arrayUseUnique);
+
         $string = "<?php
 
 namespace App\Form;
@@ -154,6 +167,7 @@ use App\Entity\\".$data['crud']['entity'].";
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+".$stringUse."
 
 class ".$data['crud']['form']." extends AbstractType
 {

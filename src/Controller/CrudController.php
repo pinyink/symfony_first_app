@@ -122,7 +122,8 @@ class CrudController extends AbstractController
                 'crudName' => $value->getCrud()->getEntityName(),
                 'type' => $value->getType(),
                 'setting' => $value->getSetting(),
-                'datatable' => $value->getDatatable()
+                'datatable' => $value->getDatatable(),
+                'label' => $value->getLabel()
             ];
             array_push($fields, $array);
         }
