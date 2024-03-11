@@ -184,9 +184,7 @@ class CrudTwigServicer
 {% block title %}".$this->data['crud']['entity']."{% endblock %}
 
 {% block stylesheets %}
-    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css\" integrity=\"sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
     
-    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css\" integrity=\"sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
 {% endblock %}
 
 {% block body %}
@@ -280,9 +278,7 @@ class CrudTwigServicer
 {% block title %}".$this->data['crud']['entity']."{% endblock %}
 
 {% block stylesheets %}
-    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap.css\" integrity=\"sha512-GgMRV6UXqOFCfW5B+j4bvTRCU9vGYA9o46NiaMUrlHGcSJHg68o7X7IGAPl+pvaApCjCU3C5MsWhgDGGkmaaPg==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
     
-    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.bootstrap4.css\" integrity=\"sha512-dufHiZudcIxbGBWe8xgxnZZyrDstYWv60bXzUww0cl9az56Y86/qEzGDW3lYkQxCFmr/H79i2Kl+uip/KEmw7Q==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />
 {% endblock %}
 
 {% block body %}

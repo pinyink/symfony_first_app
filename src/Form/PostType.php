@@ -24,7 +24,10 @@ class PostType extends AbstractType
                 'label' => 'Summary'
             ])
 			->add('content', TextareaType::class, [
-                'label' => 'Content'
+                'label' => 'Content',
+                'attr' => [
+                    'class' => 'summernote',
+                ]
             ])
         ;
     }
