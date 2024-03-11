@@ -45,4 +45,16 @@ class CategoriesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function postToCategories($post): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id, a.url, a.name')
+            ->join('a.postToCategories', 'b', 'left')
+            // ->join('b.post', 'c', 'left')
+            // ->andWhere('b.post = :post')
+            // ->setParameter('post', $post)
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

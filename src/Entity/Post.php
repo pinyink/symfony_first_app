@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
+#[UniqueEntity(fields:['url'], message:'This Url is already used.')]
 class Post
 {
     #[ORM\Id]
@@ -35,6 +42,14 @@ class Post
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $modified = null;
 
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: PostToCategories::class)]
+    private Collection $postToCategories;
+
+    public function __construct()
+    {
+        $this->postToCategories = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +74,8 @@ class Post
 
     public function setUrl(string $url): static
     {
+        $slugger = new AsciiSlugger();
+        $url = $slugger->slug($url);
         $this->url = $url;
 
         return $this;
@@ -120,6 +137,36 @@ class Post
     public function setModified(\DateTimeInterface $modified): static
     {
         $this->modified = $modified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostToCategories>
+     */
+    public function getPostToCategories(): Collection
+    {
+        return $this->postToCategories;
+    }
+
+    public function addPostToCategory(PostToCategories $postToCategory): static
+    {
+        if (!$this->postToCategories->contains($postToCategory)) {
+            $this->postToCategories->add($postToCategory);
+            $postToCategory->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostToCategory(PostToCategories $postToCategory): static
+    {
+        if ($this->postToCategories->removeElement($postToCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($postToCategory->getPost() === $this) {
+                $postToCategory->setPost(null);
+            }
+        }
 
         return $this;
     }

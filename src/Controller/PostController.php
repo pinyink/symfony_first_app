@@ -69,6 +69,8 @@ class PostController extends AbstractController
             $username = $this->getUser()->getUserIdentifier();
             $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
             $post->setUser($user);
+            $post->setDate(new \Datetime());
+            $post->setModified(new \DateTime());
             $entityManager->persist($post);
             $entityManager->flush();
             $this->addFlash('success', 'Simpan Data Berhasil');
@@ -92,6 +94,7 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post->setModified(new \DateTime());
             $entityManager->flush();
             $this->addFlash('success', 'Edit Data Berhasil');
             return $this->redirectToRoute('app_post_edit', ['id' => $post->getId()], Response::HTTP_SEE_OTHER);

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CategoriesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -23,6 +25,14 @@ class Categories
 
     #[ORM\Column(length: 255)]
     private ?string $summary = null;
+
+    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: PostToCategories::class)]
+    private Collection $postToCategories;
+
+    public function __construct()
+    {
+        $this->postToCategories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,6 +71,36 @@ class Categories
     public function setSummary(string $summary): static
     {
         $this->summary = $summary;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostToCategories>
+     */
+    public function getPostToCategories(): Collection
+    {
+        return $this->postToCategories;
+    }
+
+    public function addPostToCategory(PostToCategories $postToCategory): static
+    {
+        if (!$this->postToCategories->contains($postToCategory)) {
+            $this->postToCategories->add($postToCategory);
+            $postToCategory->setCategories($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostToCategory(PostToCategories $postToCategory): static
+    {
+        if ($this->postToCategories->removeElement($postToCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($postToCategory->getCategories() === $this) {
+                $postToCategory->setCategories(null);
+            }
+        }
 
         return $this;
     }

@@ -255,7 +255,7 @@ class CrudTwigServicer
             $formRow .= "\n\t{{ form_row(form.".$value['name'].") }}";
         }
         $string = "{{ form_start(form) }}".$formRow."
-    <button class=\"btn btn-primary\">{{ button_label|default('Save') }}</button>
+    <button class=\"btn btn-primary\"><i class=\"fas fa-edit\"></i> {{ button_label|default('Save') }}</button>
 {{ form_end(form) }}";
         $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/_form.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");

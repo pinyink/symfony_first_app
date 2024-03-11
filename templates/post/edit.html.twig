@@ -34,24 +34,38 @@
                 {{ message }}
             </div>
         {% endfor %}
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Data Post</h3>
-                <div class="card-tools">
-                    <a href="{{ path('app_post')}}" class="btn btn-tool">
-                        <i class="fas fa-list"></i>
-                    </a>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Data Post</h3>
+                        <div class="card-tools">
+                            <a href="{{ path('app_post')}}" class="btn btn-tool">
+                                <i class="fas fa-list"></i>
+                            </a>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{ include('post/_form.html.twig', {'button_label': 'Update'}) }}
+                        
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                {{ include('post/_form.html.twig', {'button_label': 'Update'}) }}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Categories</h3>
+                        <div class="card-tools">
+                        </div>
+                    </div>
+                    <div class="card-body" id="divCategories">
+                    </div>
+                </div>
             </div>
-
         </div>
-
     </section>
 
 </div>
@@ -60,6 +74,74 @@
 
 {% block javascripts %}
     <script>
+        $(document).ready(function () {
+            getCategories();
+        });
+
+        function getCategories() {
+            $.ajax({
+                type: "GET",
+                url: "{{ path('app_post_to_categories', {id: post.id}) }}",
+                dataType: "json",
+                success: function (response) {
+                    if(response.data.length >= 1) {
+                        var html = "";
+                        $.each(response.data, function (indexInArray, valueOfElement) { 
+                            var checked = '';
+                            if (valueOfElement.postToCategories == true) {
+                                checked = 'checked';
+                            }
+                            html += `<div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input checkbox-categories" type="checkbox" value="`+valueOfElement.id+`" id="checkbox_`+valueOfElement.id+`" onchange="checkboxChange(`+valueOfElement.id+`)" `+checked+`>
+                                    <label for="checkbox_`+valueOfElement.id+`" class="custom-control-label">`+valueOfElement.name+`</label>
+                                </div>
+                            </div>`;
+                        });
+                        $('#divCategories').html(html);
+                    }
+                }
+            });
+        }
+
+        function checkboxChange(id) {
+            var categories = $("#checkbox_"+id).val();
+            if($("#checkbox_"+id).is(":checked")) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('app_post_to_categories_save', {id: post.id}) }}",
+                    data: {post: '{{post.id}}', categories: categories},
+                    dataType: "JSON",
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Notification !",
+                            text: response.message,
+                            icon: response.info
+                        });
+                    },
+                    error: function (jqXHR) {
+                        console.log(jqXHR.responseText);
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('app_post_to_categories_remove', {id: post.id}) }}",
+                    data: {post: '{{post.id}}', categories: categories},
+                    dataType: "JSON",
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Notification !",
+                            text: response.message,
+                            icon: response.info
+                        });
+                    },
+                    error: function (jqXHR) {
+                        console.log(jqXHR.responseText);
+                    }
+                });
+            }
+        }
         
     </script>
 {% endblock %}

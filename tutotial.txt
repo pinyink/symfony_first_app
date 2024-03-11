@@ -1,0 +1,35 @@
+
+To set the default time zone in a Symfony 7 application, follow these steps:
+
+Environment Variable:
+In your .env file, add a new environment variable named APP_TIMEZONE and set it to your desired time zone. For example:
+APP_TIMEZONE=America/New_York
+
+Configure Services:
+Define a new parameter named timezone in the config/services.yaml file. Use the value of the APP_TIMEZONE environment variable:
+# config/services.yaml
+parameters:
+    timezone: '%env(APP_TIMEZONE)%'
+
+Override the Kernel’s boot Method:
+In your src/Kernel.php class, override the boot method.
+Retrieve the timezone parameter from the container and set it as the default time zone using date_default_timezone_set:
+PHP
+
+// src/Kernel.php
+<?php
+namespace App;
+
+use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+
+class Kernel extends BaseKernel
+{
+    use MicroKernelTrait;
+
+    public function boot(): void
+    {
+        parent::boot();
+        date_default_timezone_set($this->getContainer()->getParameter('timezone'));
+    }
+}
