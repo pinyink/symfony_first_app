@@ -101,6 +101,22 @@
             currentLink[0].classList.add("active");
             currentLink[0].closest(".nav-treeview").style.display="block";
             currentLink[0].closest(".has-treeview").classList.add("active");
+
+            function file_select(event, path) {
+                // Get the selected file
+                const selectedFile = event.target.files[0];
+
+                if (selectedFile) {
+                    // Create a FileReader to read the file
+                    const reader = new FileReader();
+
+                    // When the file is loaded, set the image source
+                    reader.onload = function(e) {
+                        $("#img-preview-"+path).attr("src", e.target.result);
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            }
         </script>
         
         {% block javascripts %}

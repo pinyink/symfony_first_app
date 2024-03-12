@@ -6,6 +6,15 @@ class CrudServicer
 {
     public function controller($dir, $data = []) : static
     {
+        $arrayUse = [];
+        foreach ($data['fields'] as $key => $value) {
+            // jika type image maka store use
+            if ($value['type'] == 3) {
+                array_push($arrayUse, 'use App\Service\FileUploader;');
+            }
+        }
+        $arrayUseUnique = array_unique($arrayUse);
+        $stringUse = implode("\n", $arrayUseUnique);
         $string = "<?php
 namespace App\Controller;
 
@@ -17,6 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+".$stringUse."
 
 class ".$data['crud']['entity']."Controller extends AbstractController
 {
@@ -76,13 +86,34 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".
         ]);
     }";
 
+    $arrayParams = [];
+    $setData = "";
+    foreach ($data['fields'] as $key => $value) {
+        // jika type image
+        if ($value['type'] == 3) {
+            // set param di function
+            array_push($arrayParams, 'FileUploader $fileUploader');
+
+            // get data dari form dan memproses
+            $setData .= "\$".$value['name']." = \$form->get('".$value['name']."')->getData();
+            if (\$".$value['name'].") {
+                \$dir = \$this->getParameter('image_directory');
+                \$fileUploader->setTargetDirectory(\$dir.'/".strtolower($data['crud']['entity'])."');
+                \$".$value['name']."FileName = \$fileUploader->upload(\$".$value['name'].");
+                \$".strtolower($data['crud']['entity'])."->set".ucwords($value['name'])."(\$".$value['name']."FileName);
+            }";
+        }
+    }
+    $arrayParamsUnique = array_unique($arrayParams);
+    $stringParams = implode(", ", $arrayParamsUnique);
 $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
-    public function new(Request \$request, EntityManagerInterface \$entityManager): Response
+    public function new(Request \$request, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity']."();
         \$form = \$this->createForm(".$data['crud']['form']."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
         if (\$form->isSubmitted() && \$form->isValid()) {
+            ".$setData."
             \$entityManager->persist(\$".strtolower($data['crud']['entity']).");
             \$entityManager->flush();
             \$this->addFlash('success', 'Simpan Data Berhasil');
@@ -94,7 +125,7 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".
         ]);
     }";
 $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".$data['crud']['route']."_edit', methods: ['GET', 'POST'])]
-    public function edit(Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity']).", int \$id, EntityManagerInterface \$entityManager): Response
+    public function edit(Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity']).", int \$id, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         if (!\$".strtolower($data['crud']['entity']).") {
             throw \$this->createNotFoundException(
@@ -105,6 +136,7 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".
         \$form->handleRequest(\$request);
 
         if (\$form->isSubmitted() && \$form->isValid()) {
+            ".$setData."
             \$entityManager->flush();
             \$this->addFlash('success', 'Edit Data Berhasil');
             return \$this->redirectToRoute('app_".$data['crud']['route']."_edit', ['id' => \$".strtolower($data['crud']['entity'])."->getId()], Response::HTTP_SEE_OTHER);
@@ -149,11 +181,36 @@ $string .= "\n}";
             ])";
                 array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\TextType;');
             }
+            // jika type textarea
             if ($value['type'] == 2) {
                 $form .= "\n\t\t\t->add('".$value['name']."', TextareaType::class, [
                 'label' => '".$value['label']."'
             ])";
                 array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\TextareaType;');
+            }
+            // jika type gambar
+            if ($value['type'] == 3) {
+                $form .= "\n\t\t\t->add('".$value['name']."', FileTypeType::class, [
+                'label' => '".$value['label']."',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new FileConstraints([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'image/jpg',
+                            'image/jpeg',
+                            'image/png'
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid Image'
+                    ])
+                ],
+                'attr' => [
+                    'accept' => '.jpg,.jpeg,.img,.png',
+                ]
+            ])";
+                array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\FileType as FileTypeType;');
+                array_push($arrayUse, 'use Symfony\Component\Validator\Constraints\File as FileConstraints;');
             }
         }
         $arrayUseUnique = array_unique($arrayUse);

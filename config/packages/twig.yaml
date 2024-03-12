@@ -1,4 +1,7 @@
 twig:
+    globals:
+        foto_profil_directory: 'uploads/foto_profil/'
+        image_directory: 'uploads/image/'
     file_name_pattern: '*.twig'
     form_themes: ['bootstrap_4_layout.html.twig']
 

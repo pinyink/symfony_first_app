@@ -179,6 +179,16 @@ class CrudTwigServicer
 
     private function makeForm($action, $label) 
     {
+        $javascript = "$(document).ready(function() {";
+        foreach ($this->data['fields'] as $key => $value) {
+            if ($value['type'] == 3) {
+                $javascript .= "
+            $(\"#".strtolower($this->data['crud']['entity'])."_".$value['name']."\").change(function(e) {
+                file_select(e, '".$value['name']."');
+            });";
+            }
+        }
+        $javascript .= "\n\t\t});";
         $string = "{% extends 'adminlte.html.twig' %}
 
 {% block title %}".$this->data['crud']['entity']."{% endblock %}
@@ -239,7 +249,7 @@ class CrudTwigServicer
 
 {% block javascripts %}
     <script>
-        
+        ".$javascript."
     </script>
 {% endblock %}
         ";
@@ -250,7 +260,21 @@ class CrudTwigServicer
     {
         $formRow = "";
         foreach ($this->data['fields'] as $key => $value) {
-            $formRow .= "\n\t{{ form_row(form.".$value['name'].") }}";
+            if ($value['type'] == 3) {
+                $formRow .= "\n\t{{ form_row(form.".$value['name'].") }}";
+                $formRow .= "\n\t<div class=\"row mb-2\">
+                <div class=\"col-md-2\" id=\"divimage_".$value['name']."\">
+                    <img src=\"{{ asset('img/image.jpg') }}\" alt=\"\" class=\"img img-thumbnail img-preview \" id=\"img-preview-".$value['name']."\" style=\"width: 100px; height: 100px;\">
+                </div>
+                {% if (button_label == 'Update') %}
+                    <div class=\"col-md-2\" id=\"divcol_".$value['name']."\">
+                        <img src=\"{{ asset(image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name'].") }}\" alt=\"\" class=\"img img-thumbnail img-preview\" id=\"img-old-".$value['name']."\" style=\"width: 100px; height: 100px;\">
+                    </div>
+                {% endif %}
+            </div>";
+            } else {
+                $formRow .= "\n\t{{ form_row(form.".$value['name'].") }}";
+            }
         }
         $string = "{{ form_start(form) }}".$formRow."
     <button class=\"btn btn-primary\"><i class=\"fas fa-edit\"></i> {{ button_label|default('Save') }}</button>
@@ -266,11 +290,19 @@ class CrudTwigServicer
     {
         $table = "<table class=\"table\">";
         foreach ($this->data['fields'] as $key => $value) {
-            $table .= "<tr>
+            if ($value['type'] == 3) {
+                $table .= "<tr>
+                <td style=\"width: 20%\">".$value['label']."</td>
+                <td style=\"width: 5%;\">:</td>
+                <td style=\"width: 75%;\">{{ image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." }} <br><img src=\"{{ asset(image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." ) }}\" alt=\"\" class=\"img img-thumbnail img-preview \" style=\"width: 100px; height: 100px;\"></td>
+            </tr>";
+            } else {
+                $table .= "<tr>
                 <td style=\"width: 20%\">".$value['label']."</td>
                 <td style=\"width: 5%;\">:</td>
                 <td style=\"width: 75%;\">{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
             </tr>";
+            }
         }
         $table .= "</table>";
         $string = "{% extends 'adminlte.html.twig' %}

@@ -54,7 +54,7 @@ class UserType extends AbstractType
                     ])
                 ],
                 'attr' => [
-                    'accept' => '.jpg,.jpeg,.img'
+                    'accept' => '.jpg,.jpeg,.img,.png'
                 ]
             ])
         ;

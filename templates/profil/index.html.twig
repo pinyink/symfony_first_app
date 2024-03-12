@@ -41,7 +41,7 @@
                         <div class="text-center">
                             <img class="profile-user-img img-fluid img-circle" src="
                                 {% if app.user.foto != null %}
-                                    {{ asset("uploads/foto_profil/" ~ app.user.foto) }}
+                                    {{ asset(foto_profil_directory ~ app.user.foto) }}
                                 {% else %}
                                     https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/img/avatar5.png
                                 {% endif %}

@@ -1,0 +1,16 @@
+{{ form_start(form) }}
+	{{ form_row(form.name) }}
+	{{ form_row(form.size) }}
+	{{ form_row(form.path) }}
+	<div class="row mb-2">
+                <div class="col-md-2" id="divimage_path">
+                    <img src="{{ asset('img/image.jpg') }}" alt="" class="img img-thumbnail img-preview " id="img-preview-path" style="width: 100px; height: 100px;">
+                </div>
+                {% if (button_label == 'Update') %}
+                    <div class="col-md-2" id="divcol_path">
+                        <img src="{{ asset(image_directory ~ 'file/' ~ file.path) }}" alt="" class="img img-thumbnail img-preview" id="img-old-path" style="width: 100px; height: 100px;">
+                    </div>
+                {% endif %}
+            </div>
+    <button class="btn btn-primary"><i class="fas fa-edit"></i> {{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

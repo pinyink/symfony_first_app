@@ -1,0 +1,68 @@
+{% extends 'adminlte.html.twig' %}
+
+{% block title %}File{% endblock %}
+
+{% block stylesheets %}
+    
+{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>File</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item">File</li>
+                        <li class="breadcrumb-item active">Tambah</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Data File</h3>
+                <div class="card-tools">
+                    <a href="{{ path('app_file')}}" class="btn btn-tool">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {{ include('file/_form.html.twig', {'button_label': 'Save'}) }}
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $("#file_path").change(function(e) {
+                file_select(e, 'path');
+            });
+		});
+    </script>
+{% endblock %}
+        
