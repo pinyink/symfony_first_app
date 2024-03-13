@@ -135,9 +135,9 @@ class FileController extends AbstractController
     #[Route('/file/data', name: 'app_file_data', methods: ['GET'])]
     public function data(Request $request, EntityManagerInterface $entityManagerInterface) : Response
     {
-        $page = $request->get('page');
+        $page = $request->get('page') == null || $request->get('page') == 1 ? 0 : $request->get('page') * 10;
         $file = $entityManagerInterface->getRepository(File::class);
-        $dataFile = $file->data();
+        $dataFile = $file->data([], [], 10, $page);
         return $this->json([
             'page' => $page,
             'baseUrl' => 'uploads/image/file',

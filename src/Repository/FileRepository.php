@@ -46,10 +46,21 @@ class FileRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function data(): array
+    public function data($where = [], $params = [], $limit = 10, $offset = 0): array
     {
         $query = $this->createQueryBuilder('f');
-        
+        if (!empty($where)) {
+            foreach ($where as $key => $value) {
+                $query->andWhere($value);
+            }
+        }
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->setParameter($key, $value);
+            }
+        }
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
         return $query->getQuery()->getResult();
     }
 }
