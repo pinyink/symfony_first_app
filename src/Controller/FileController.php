@@ -72,6 +72,8 @@ class FileController extends AbstractController
                 $fileUploader->setTargetDirectory($dir.'/file');
                 $pathFileName = $fileUploader->upload($path);
                 $file->setPath($pathFileName);
+                $size = filesize($dir.'/file/'.$pathFileName);
+                $file->setSize($size);
             }
             $entityManager->persist($file);
             $entityManager->flush();
@@ -102,6 +104,8 @@ class FileController extends AbstractController
                 $fileUploader->setTargetDirectory($dir.'/file');
                 $pathFileName = $fileUploader->upload($path);
                 $file->setPath($pathFileName);
+                $size = filesize($dir.'/file/'.$pathFileName);
+                $file->setSize($size);
             }
             $entityManager->flush();
             $this->addFlash('success', 'Edit Data Berhasil');
@@ -125,6 +129,19 @@ class FileController extends AbstractController
         return $this->json([
             "info" => "success",
             "message" => "Delete Data Berhasil"
+        ]);
+    }
+
+    #[Route('/file/data', name: 'app_file_data', methods: ['GET'])]
+    public function data(Request $request, EntityManagerInterface $entityManagerInterface) : Response
+    {
+        $page = $request->get('page');
+        $file = $entityManagerInterface->getRepository(File::class);
+        $dataFile = $file->data();
+        return $this->json([
+            'page' => $page,
+            'baseUrl' => 'uploads/image/file',
+            'data' => $dataFile
         ]);
     }
 }

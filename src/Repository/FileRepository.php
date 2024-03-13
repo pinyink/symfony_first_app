@@ -45,4 +45,11 @@ class FileRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function data(): array
+    {
+        $query = $this->createQueryBuilder('f');
+        
+        return $query->getQuery()->getResult();
+    }
 }

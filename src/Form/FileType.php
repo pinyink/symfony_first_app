@@ -19,7 +19,10 @@ class FileType extends AbstractType
                 'label' => 'Name'
             ])
 			->add('size', TextType::class, [
-                'label' => 'Size'
+                'label' => 'Size',
+                'attr' => [
+                    'readonly' => 'readonly'
+                ]
             ])
 			->add('path', FileTypeType::class, [
                 'label' => 'Image',
