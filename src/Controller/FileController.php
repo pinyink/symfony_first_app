@@ -144,4 +144,18 @@ class FileController extends AbstractController
             'data' => $dataFile
         ]);
     }
+
+    #[Route('file/{id}/detail', name: 'app_file_detail', methods: ['GET'])]
+    public function detail(File $file, int $id) : Response
+    {
+        if (!$file) {
+            throw $this->createNotFoundException();
+        }
+        $data = [
+            'id' => $file->getId(),
+            'name' => $file->getName(),
+            'path' => '/uploads/image/file/'.$file->getPath()
+        ];
+        return $this->json($data);
+    }
 }

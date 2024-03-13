@@ -75,20 +75,50 @@
 <div class="modal fade" id="modal-lg">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Large Modal</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
             <div class="modal-body">
-                <form action="/file-upload" class="dropzone" id="my-awesome-dropzone">
-                    
-                </form>
+                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tabs-four-home-tab" data-toggle="pill" href="#custom-tabs-four-home"
+                            role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">File</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-detail-file-tab" data-toggle="pill" href="#custom-tabs-detail-file"
+                            role="tab" aria-controls="custom-tabs-detail-file" aria-selected="false">Detail</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="custom-tabs-three-tabContent">
+                    <div class="tab-pane fade show active" id="custom-tabs-four-home" role="tabpanel" aria-labelledby="custom-tabs-four-home-tab">
+                        <div class="row photos">
+                        
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-detail-file" role="tabpanel" aria-labelledby="custom-tabs-detail-file-tab">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a id="link-img" data-lightbox="photos">
+                                    <img src="" alt="" id="img-file" class="img img-rounded" style="height: 260px; width: 100%">
+                                </a>
+                            </div>
+                            <div class="col-md-8">
+                                <table class="table">
+                                    <tr>
+                                        <td style="width: 20%">Name</td>
+                                        <td style="width: 5%">:</td>
+                                        <td style="width: 75%" id="fileName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>URL</td>
+                                        <td>:</td>
+                                        <td id="fileUrl"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -104,6 +134,9 @@
 
         $(document).ready(function () {
             getCategories();
+
+            // get File Manager
+            getFile();
         });
 
         function getCategories() {
@@ -169,6 +202,46 @@
                     }
                 });
             }
+        }
+
+        function getFile() {
+            $.ajax({
+                type: "GET",
+                url: "{{ path('app_file_data') }}",
+                dataType: "JSON",
+                success: function (response) {
+                    var html = "";
+                    $.each(response.data, function (indexInArray, valueOfElement) { 
+                        html += `<div class="col-sm-6 col-md-4 col-lg-3 item">
+                            <div class="card">
+                                <a href="/`+response.baseUrl+'/'+valueOfElement.path+`" data-lightbox="photos">
+                                    <img class="card-img-top" style="height: 200px;" src="/`+response.baseUrl+'/'+valueOfElement.path+`" alt="Card image cap">
+                                </a>
+                                <div class="card-body">
+                                    <p>`+valueOfElement.name+`</p>
+                                    <button type="button" onclick="edit_file(`+valueOfElement.id+`)" class="btn btn-primary btn-sm btn-block">Detail</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    $('.photos').html(html);
+                }
+            });
+        }
+
+        function edit_file(id) {
+            $.ajax({
+                type: "get",
+                url: "/file/"+id+"/detail",
+                dataType: "json",
+                success: function (response) {
+                    $('a[href="#custom-tabs-detail-file"]').tab('show');
+                    $('#link-img').attr('href', response.path);
+                    $('#img-file').attr('src', response.path);
+                    $('#fileName').text(response.name);
+                    $('#fileUrl').text(response.path);
+                }
+            });
         }
         
     </script>
