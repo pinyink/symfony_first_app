@@ -63,4 +63,13 @@ class FileRepository extends ServiceEntityRepository
         $query->setMaxResults($limit);
         return $query->getQuery()->getResult();
     }
+
+    public function total() : int
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('count(f.id) as total')
+            ->getQuery()
+            ->getOneOrNullResult();
+        return $query['total'];
+    }
 }

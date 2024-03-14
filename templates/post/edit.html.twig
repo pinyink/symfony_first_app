@@ -91,6 +91,7 @@
                         <div class="row photos">
                         
                         </div>
+                        <div class="text-center w-100" id="pagingFile"></div>
                     </div>
                     <div class="tab-pane fade" id="custom-tabs-detail-file" role="tabpanel" aria-labelledby="custom-tabs-detail-file-tab">
                         <div class="row">
@@ -225,6 +226,60 @@
                         </div>`;
                     });
                     $('.photos').html(html);
+                    
+                    var currentPage = parseInt(response.currentPage);
+                    var totalPage = parseInt(response.totalPage);
+                    var before3 = currentPage - 3;
+                    var before1 = currentPage - 1;
+                    var after3 = currentPage + 3;
+                    var after1 = currentPage + 1;
+
+                    var paging = `<nav aria-label="Page navigation example">
+                        <ul class="pagination">`;
+                    if (before1 >= 1) {
+                        paging += `<li class="page-item">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>`;
+                    } else {
+                        paging += `<li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>`;
+                    }
+
+                    var x = before3;
+                    while(x < currentPage ) {
+                        if (x >= 1) {
+                            paging += `<li class="page-item">
+                                <a class="page-link" href="#">`+x+`</a>
+                            </li>`;
+                        }
+                        x++;
+                    }
+                    // current page
+                    paging += `<li class="page-item active">
+                        <a class="page-link" href="#">`+currentPage+`</a>
+                    </li>`;
+
+                    var x = currentPage + 1;
+                    while (x < after3) {
+                        paging += `<li class="page-item">
+                            <a class="page-link" href="#">`+x+`</a>
+                        </li>`;
+                        x++;
+                    }
+
+                    if (after1 <= parseInt(totalPage)) {
+                        paging += `<li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>`;
+                    } else {
+                        paging += `<li class="page-item disabled">
+                            <a class="page-link" href="#">Next</a>
+                        </li>`;
+                    }
+                            
+                    paging += `</ul></nav>`;
+                    $('#pagingFile').html(paging);
                 }
             });
         }
