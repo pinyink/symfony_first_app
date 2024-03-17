@@ -45,6 +45,9 @@ class Post
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: PostToCategories::class)]
     private Collection $postToCategories;
 
+    #[ORM\ManyToOne(inversedBy: 'posts')]
+    private ?File $sampul = null;
+
     public function __construct()
     {
         $this->postToCategories = new ArrayCollection();
@@ -167,6 +170,18 @@ class Post
                 $postToCategory->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSampul(): ?File
+    {
+        return $this->sampul;
+    }
+
+    public function setSampul(?File $sampul): static
+    {
+        $this->sampul = $sampul;
 
         return $this;
     }

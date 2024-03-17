@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\FileUploader;
+use App\Service\FormatSize;
 
 class FileController extends AbstractController
 {
@@ -23,7 +24,7 @@ class FileController extends AbstractController
     }
 
 	#[Route(path: '/file_ajax', name: 'app_file_ajax', methods: ['POST'])]
-    public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
+    public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request, FormatSize $formatSize) : Response
     {
         $dataTable->setColumnOrder([null, null, 'name', 'size']);
         $dataTable->setColumnSearch(['id', 'name', 'size']);
@@ -38,7 +39,7 @@ class FileController extends AbstractController
             $row[] = $no;
             $row[] = "<a href='".$this->generateUrl('app_file_show', ['id' => $value['id']])."' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='".$this->generateUrl('app_file_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>";
 			$row[] = $value['name'];
-			$row[] = $value['size'];
+			$row[] = $formatSize->formatSizeUnits($value['size']);
             $data[] = $row;
             $no++;
         }
@@ -87,13 +88,14 @@ class FileController extends AbstractController
     }
 
 	#[Route('/file/{id}/edit', name: 'app_file_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, File $file, int $id, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
+    public function edit(Request $request, File $file, int $id, EntityManagerInterface $entityManager, FileUploader $fileUploader, FormatSize $formatSize): Response
     {
         if (!$file) {
             throw $this->createNotFoundException(
                 'No File found for id '.$id
             );
         }
+        $file->setSize($formatSize->formatSizeUnits($file->getSize()));
         $form = $this->createForm(filetype::class, $file);
         $form->handleRequest($request);
 
@@ -142,8 +144,8 @@ class FileController extends AbstractController
         $total = $file->total() / 10;
 
         // percobaan
-        $page = 3;
-        $total = 10;
+        // $page = 3;
+        // $total = 10;
         return $this->json([
             'currentPage' => $page,
             'totalPage' => $total,

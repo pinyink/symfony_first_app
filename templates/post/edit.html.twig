@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal-lg">File Manager</button>
+                <button type="button" class="btn btn-primary btn-block" onclick="getFile()" data-toggle="modal" data-target="#modal-lg">File Manager</button>
                 <div class="card mt-2">
                     <div class="card-header">
                         <h3 class="card-title">Categories</h3>
@@ -63,6 +63,16 @@
                         </div>
                     </div>
                     <div class="card-body" id="divCategories">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-block" onclick="SampulGetData()" data-toggle="modal" data-target="#modal-sampul">Gambar Sampul</button>
+                <div class="card mt-2">
+                    <div class="card-body text-center" id="divSampul">
+                        {% if (post.sampul == null) %}
+                            <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="img img-thumbnail">
+                        {% else %}
+                            <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path) }}" alt="" id="imgSampul" class="img img-thumbnail">
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -117,6 +127,23 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# modal gambar sampul #}
+<div class="modal fade" id="modal-sampul">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row sampul">
+                        
+                </div>
+                <div class="text-center w-100" id="pagingFileSampul"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
@@ -262,9 +289,11 @@
 
                     var x = currentPage + 1;
                     while (x < after3) {
-                        paging += `<li class="page-item">
-                            <a class="page-link" href="#">`+x+`</a>
-                        </li>`;
+                        if(x < totalPage) {
+                            paging += `<li class="page-item">
+                                <a class="page-link" href="#">`+x+`</a>
+                            </li>`;
+                        }
                         x++;
                     }
 
@@ -295,6 +324,115 @@
                     $('#img-file').attr('src', response.path);
                     $('#fileName').text(response.name);
                     $('#fileUrl').text(response.path);
+                }
+            });
+        }
+
+        function SampulGetData() {
+            $.ajax({
+                type: "GET",
+                url: "{{ path('app_file_data') }}",
+                dataType: "JSON",
+                success: function (response) {
+                    var html = "";
+                    $.each(response.data, function (indexInArray, valueOfElement) { 
+                        html += `<div class="col-sm-6 col-md-4 col-lg-3 item">
+                            <div class="card">
+                                <a href="/`+response.baseUrl+'/'+valueOfElement.path+`" data-lightbox="photos">
+                                    <img class="card-img-top" style="height: 200px;" src="/`+response.baseUrl+'/'+valueOfElement.path+`" alt="Card image cap">
+                                </a>
+                                <div class="card-body">
+                                    <p>`+valueOfElement.name+`</p>
+                                    <button type="button" onclick="sampulUse(`+valueOfElement.id+`)" class="btn btn-primary btn-sm btn-block">Gunakan</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    $('.sampul').html(html);
+                    
+                    var currentPage = parseInt(response.currentPage);
+                    var totalPage = parseInt(response.totalPage);
+                    var before3 = currentPage - 3;
+                    var before1 = currentPage - 1;
+                    var after3 = currentPage + 3;
+                    var after1 = currentPage + 1;
+
+                    var paging = `<nav aria-label="Page navigation example">
+                        <ul class="pagination">`;
+                    if (before1 >= 1) {
+                        paging += `<li class="page-item">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>`;
+                    } else {
+                        paging += `<li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>`;
+                    }
+
+                    var x = before3;
+                    while(x < currentPage ) {
+                        if (x >= 1) {
+                            paging += `<li class="page-item">
+                                <a class="page-link" href="#">`+x+`</a>
+                            </li>`;
+                        }
+                        x++;
+                    }
+                    // current page
+                    paging += `<li class="page-item active">
+                        <a class="page-link" href="#">`+currentPage+`</a>
+                    </li>`;
+
+                    var x = currentPage + 1;
+                    while (x < after3) {
+                        if(x < totalPage) {
+                            paging += `<li class="page-item">
+                                <a class="page-link" href="#">`+x+`</a>
+                            </li>`;
+                        }
+                        x++;
+                    }
+
+                    if (after1 <= parseInt(totalPage)) {
+                        paging += `<li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>`;
+                    } else {
+                        paging += `<li class="page-item disabled">
+                            <a class="page-link" href="#">Next</a>
+                        </li>`;
+                    }
+                            
+                    paging += `</ul></nav>`;
+                    $('#pagingFileSampul').html(paging);
+                }
+            });
+        }
+
+        function sampulUse(id) {
+            $.ajax({
+                type: "get",
+                url: "/file/"+id+"/detail",
+                dataType: "json",
+                success: function (response) {
+                    $('#modal-sampul').modal('hide');
+                    $('#imgSampul').attr('src', response.path);
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ path('app_post_sampul', {id: post.id}) }}",
+                        data: {'fileId': id},
+                        dataType: "JSON",
+                        success: function (response) {
+                            Swal.fire({
+                                title: "Notification !",
+                                text: response.message,
+                                icon: response.info
+                            });
+                        },
+                        error : function (jqXHR) {
+                            console.log(jqXHR.responseText);
+                        }
+                    });
                 }
             });
         }

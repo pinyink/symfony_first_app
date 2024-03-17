@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\File;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Form\PostType;
@@ -117,6 +118,28 @@ class PostController extends AbstractController
         return $this->json([
             "info" => "success",
             "message" => "Delete Data Berhasil"
+        ]);
+    }
+
+    #[Route('/post/{id}/sampul', name: 'app_post_sampul', methods: ['POST'])]
+    public function sampul(int $id, Post $post, EntityManagerInterface $em, Request $request) : Response
+    {
+        if (!$post) {
+            return $this->json([
+                "info" => "danger",
+                "message" => "ID Not Found"
+            ]);
+        }
+
+        $data = $request->request->all();
+        $sampul = $em->getRepository(File::class);
+        $sampulId = $sampul->find($data['fileId']);
+        $post->setSampul($sampulId);
+        $em->flush();
+        
+        return $this->json([
+            "info" => "success",
+            "message" => "Update Sampul Berhasil"
         ]);
     }
 }

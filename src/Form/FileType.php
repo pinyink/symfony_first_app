@@ -22,7 +22,7 @@ class FileType extends AbstractType
                 'label' => 'Size',
                 'attr' => [
                     'readonly' => 'readonly'
-                ]
+                ],
             ])
 			->add('path', FileTypeType::class, [
                 'label' => 'Image',

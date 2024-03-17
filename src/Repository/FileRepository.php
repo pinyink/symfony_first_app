@@ -49,6 +49,7 @@ class FileRepository extends ServiceEntityRepository
     public function data($where = [], $params = [], $limit = 10, $offset = 0): array
     {
         $query = $this->createQueryBuilder('f');
+        $query->select('f.id, f.name, f.size, f.path');
         if (!empty($where)) {
             foreach ($where as $key => $value) {
                 $query->andWhere($value);
