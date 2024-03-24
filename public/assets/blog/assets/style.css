@@ -440,6 +440,11 @@ a.categories:hover {
     cursor: pointer;
 }
 
+.paging-next a,
+.paging-previous a {
+    text-decoration: none;
+}
+
 .number li {
     list-style: none;
     height: 30px;
@@ -449,6 +454,10 @@ a.categories:hover {
     justify-content: center;
     font-weight: 600;
     cursor: pointer;
+}
+
+.number li a {
+    text-decoration: none;
 }
 
 .paging-previous:hover,

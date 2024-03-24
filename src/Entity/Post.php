@@ -48,6 +48,9 @@ class Post
     #[ORM\ManyToOne(inversedBy: 'posts')]
     private ?File $sampul = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $publish = null;
+
     public function __construct()
     {
         $this->postToCategories = new ArrayCollection();
@@ -182,6 +185,18 @@ class Post
     public function setSampul(?File $sampul): static
     {
         $this->sampul = $sampul;
+
+        return $this;
+    }
+
+    public function getPublish(): ?int
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(?int $publish): static
+    {
+        $this->publish = $publish;
 
         return $this;
     }

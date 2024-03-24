@@ -138,7 +138,7 @@ class FileController extends AbstractController
     public function data(Request $request, EntityManagerInterface $entityManagerInterface) : Response
     {
         $page = $request->get('page') == null || $request->get('page') == 0 ? 1 : $request->get('page');
-        $offset = $request->get('page') == null || $request->get('page') == 1 ? 0 : $request->get('page') * 10;
+        $offset = $page * 10;
         $file = $entityManagerInterface->getRepository(File::class);
         $dataFile = $file->data([], [], 10, $offset);
         $total = $file->total() / 10;

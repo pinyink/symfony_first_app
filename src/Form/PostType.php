@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,6 +29,15 @@ class PostType extends AbstractType
                 'attr' => [
                     'class' => 'summernote',
                 ]
+            ])
+            ->add('publish', ChoiceType::class, [
+                'choices' => [
+                    'Pilih Satu' => '',
+                    'Ya' => '1',
+                    'Tidak' => '0'
+                ],
+                'mapped' => true,
+                'label' => 'Publish',
             ])
         ;
     }

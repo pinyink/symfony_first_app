@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +46,35 @@ class PostRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function data($where = [], $params = [], $limit = 10, $offset = 0): array
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->select('p.id, p.url, p.title, p.summary, p.date, u.fullname, s.name as sampul_name, s.path as sampul_path');
+        $query->leftJoin('p.user', 'u');
+        $query->leftJoin('p.sampul', 's');
+        if (!empty($where)) {
+            foreach ($where as $key => $value) {
+                $query->andWhere($value);
+            }
+        }
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->setParameter($key, $value);
+            }
+        }
+        $query->orderBy('p.id', 'desc');
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        return $query->getQuery()->getResult();
+    }
+
+    public function total() : int
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('count(p.id) as total')
+            ->getQuery()
+            ->getOneOrNullResult();
+        return $query['total'];
+    }
 }

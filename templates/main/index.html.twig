@@ -1,20 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<section id="hero">
+    <p>The Blog</p>
+    <h1>Writings from our team</h1>
+    <p>The latest industry news, interviews, technologies and resources.</p>
+    <form action="" class="search">
+        <input type="text" placeholder="Search">
+        <button type="submit">Search</button>
+    </form>
+</section>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<section id="content">
+    <div class="content">
+        {% for post in data %}
+            <div class="box">
+                {% if (post.sampul_path == null) %}
+                    <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="img img-thumbnail">
+                {% else %}
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="">
+                {% endif %}
+                <div class="box-body">
+                    <div class="user-date">
+                        <span>
+                            <i class="fa fa-user-alt"></i> {{ post.fullname }}
+                        </span>
+                        <span>
+                            <i class="fa fa-clock"></i> {{ post.date|date('d F Y') }}
+                        </span>
+                    </div>
+                    <div class="div-title">
+                        <a href="#" class="title">{{ post.title }}</a>
+                        <a href="#" target="_blank"><i class="fa fa-external-link"></i></a>
+                    </div>
+                    <div class="description">
+                        {{ post.summary }}
+                    </div>
+                    <div class="div-categories">
+                        {% for item in post.categories %}
+                            <a href="" class="categories">{{ item.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="paging">
+        {% if pageBefore1 >= 1 %}
+            <div class="paging-previous">
+                <a href="{{ path('homepage', { page: pageBefore1 }) }}"><i class="fa fa-arrow-left"></i> Previous</a>
+            </div>
+        {% else %}
+            <div class="paging-previous">
+                
+            </div>
+        {% endif %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/laragon/www/pindi/github/symfony_first_app/src/Controller/MainController.php'|file_link(0) }}">src/Controller/MainController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/laragon/www/pindi/github/symfony_first_app/templates/main/index.html.twig'|file_link(0) }}">templates/main/index.html.twig</a></code></li>
-    </ul>
-</div>
+        <div class="paging-number">
+            <ul class="number">
+
+                {% set x = 1 %}
+                {% for x in 1..3 %}
+                    {% if pageBefore3 >= 1 %}
+                        <li><a href="{{ path('homepage', { page: pageBefore3 }) }}" class="number-item">{{ pageBefore3 }}</a></li>
+                    {% endif %}
+                    {% set pageBefore3 = pageBefore3 + 1 %}
+                    {% set x = x + 1 %}
+                {% endfor %}
+
+                <li class="active"><a href="{{ path('homepage', { page: page }) }}" class="number-item">{{ page }}</a></li>
+
+                {% set x = 1 %}
+                {% set currentPage = page %}
+                {% for x in 1..3 %}
+                    {% if currentPage <= (totalPage + 1) and currentPage != page %}
+                        <li><a href="{{ path('homepage', { page: currentPage }) }}" class="number-item">{{ currentPage }}</a></li>
+                    {% endif %}
+                    {% set currentPage = currentPage + 1 %}
+                    {% set x = x + 1 %}
+                {% endfor %}
+                
+            </ul>
+        </div>
+
+        {% if page <= totalPage %}
+            <div class="paging-next">
+                <a href="{{ path('homepage', { page: pageAfter1 }) }}">Next <i class="fa fa-arrow-right"></i></a>
+            </div>
+        {% else %}
+            <div class="paging-next">
+                
+            </div>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}
