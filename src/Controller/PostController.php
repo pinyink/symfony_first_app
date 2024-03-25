@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    #[Route('/post', name: 'app_post')]
+    #[Route('/post/index', name: 'app_post')]
     public function index(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
@@ -23,7 +23,7 @@ class PostController extends AbstractController
         ]);
     }
 
-	#[Route(path: '/post_ajax', name: 'app_post_ajax', methods: ['POST'])]
+	#[Route(path: '/post/ajax', name: 'app_post_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
         $dataTable->setColumnOrder([null, null, 'title', 'summary']);

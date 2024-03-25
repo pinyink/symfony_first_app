@@ -44,9 +44,18 @@ class MainController extends AbstractController
             'pageAfter1' => $page + 1,
             'totalPage' => $totalPage
         ]);
-        // return $this->json([
-        //     'data' => $data,
-        //     'offset' => $offset
-        // ]);
+    }
+
+    #[Route('/{slug}', name: 'blog', methods: ['GET'])]
+    public function blog(string $slug, EntityManagerInterface $entityManagerInterface) : Response
+    {
+        $post = $entityManagerInterface->getRepository(Post::class)->findOneBy(['url' => $slug]);
+        if (!$post) {
+            throw $this->createNotFoundException('Page Not Found');
+            
+        }
+        return $this->render('main/blog.html.twig', [
+            'post' => $post
+        ]);
     }
 }

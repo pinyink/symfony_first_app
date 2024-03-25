@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+<section id="hero">
+    <h2>{{ post.title }}</h2>
+    <div class="userby">
+        <span>
+            <i class="fa fa-user-alt"></i> {{ post.user.fullname }}
+        </span>
+        <span>
+            <i class="fa fa-clock"></i> {{ post.date|date('d F Y') }}
+        </span>
+    </div>
+</section>
+
+<section id="content">
+    <div class="content">
+        <div class="blog">
+            <div class="blog-detail">
+                {% if (post.sampul != null) %}
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" class="img-blog" alt="">
+                {% endif %}
+                
+                {{ post.content|raw }}
+            </div>
+            <div class="blog-aside">
+                <h1>Recent Post</h1>
+                <div class="box-aside">
+                    <img src="assets/img/img_1.jpg" alt="">
+                    <div class="box-aside-body">
+                        <h3>Building your API Stack</h3>
+                        <span>22 Jan 2023</span>
+                    </div>
+                </div>
+                <div class="box-aside">
+                    <img src="assets/img/img_1.jpg" alt="">
+                    <div class="box-aside-body">
+                        <h3>Building your API Stack with lower script</h3>
+                        <span>22 Jan 2023</span>
+                    </div>
+                </div>
+                <div class="box-aside">
+                    <img src="assets/img/img_1.jpg" alt="">
+                    <div class="box-aside-body">
+                        <h3>Building your API Stack</h3>
+                        <span>22 Jan 2023</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
