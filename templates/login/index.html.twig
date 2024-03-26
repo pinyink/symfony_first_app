@@ -22,11 +22,12 @@
 <body>
     <div class="hold-transition login-page">
         <div class="login-box">
-            <div class="login-logo">
-                <a href="../../index2.html"><b>Admin</b>LTE</a>
-            </div>
-
             <div class="card">
+                <div class="login-logo mt-4">
+                    <a href="{{ path('homepage') }}">
+                        <img src="{{ asset('assets/img/logo.png') }}" alt="Pindipin Logo" srcset="" style="height: 40px;">
+                    </a>
+                </div>
                 <div class="card-body login-card-body">
                     <p class="login-box-msg">Sign in to start your session</p>
                     <form action="{{ path('login') }}" method="post">

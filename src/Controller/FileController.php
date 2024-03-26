@@ -26,6 +26,7 @@ class FileController extends AbstractController
 	#[Route(path: '/file_ajax', name: 'app_file_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request, FormatSize $formatSize) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         $dataTable->setColumnOrder([null, null, 'name', 'size']);
         $dataTable->setColumnSearch(['id', 'name', 'size']);
         $dataTable->setTable('file');
@@ -55,6 +56,7 @@ class FileController extends AbstractController
 	#[Route('/file/{id}/show', name: 'app_file_show', methods: ['GET'])]
     public function show(File $file): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         return $this->render('file/show.html.twig', [
             'file' => $file,
         ]);
@@ -63,6 +65,7 @@ class FileController extends AbstractController
 	#[Route(path: '/file/new', name: 'app_file_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         $file = new File();
         $form = $this->createForm(FileType::class, $file);
         $form->handleRequest($request);
@@ -90,6 +93,7 @@ class FileController extends AbstractController
 	#[Route('/file/{id}/edit', name: 'app_file_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, File $file, int $id, EntityManagerInterface $entityManager, FileUploader $fileUploader, FormatSize $formatSize): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if (!$file) {
             throw $this->createNotFoundException(
                 'No File found for id '.$id
@@ -123,6 +127,7 @@ class FileController extends AbstractController
 	#[Route('/file/{id}/delete', name: 'app_file_delete', methods: ['POST'])]
     public function delete(EntityManagerInterface $entityManager, Request $request, File $file): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if ($this->isCsrfTokenValid('delete'.$file->getId(), $request->request->get('_token'))) {
             $entityManager->remove($file);
             $entityManager->flush();
@@ -137,6 +142,7 @@ class FileController extends AbstractController
     #[Route('/file/data', name: 'app_file_data', methods: ['GET'])]
     public function data(Request $request, EntityManagerInterface $entityManagerInterface) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         $page = $request->get('page') == null || $request->get('page') == 0 ? 1 : $request->get('page');
         $offset = $page != 1 ? ($page - 1) * 10 : 0;
         $file = $entityManagerInterface->getRepository(File::class);

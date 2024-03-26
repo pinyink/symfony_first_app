@@ -8,6 +8,8 @@ framework:
 
     #esi: true
     #fragments: true
+    http_method_override: false
+    disallow_search_engine_index: false
 
 when@test:
     framework:

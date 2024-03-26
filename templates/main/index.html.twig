@@ -7,93 +7,110 @@
     <p>The Blog</p>
     <h1>Writings from our team</h1>
     <p>The latest industry news, interviews, technologies and resources.</p>
-    <form action="" class="search">
-        <input type="text" placeholder="Search">
+    <form action="{{ path('homepage') }}" class="search">
+        <input type="text" placeholder="Search" name="search">
         <button type="submit">Search</button>
     </form>
 </section>
 
 <section id="content">
-    <div class="content">
-        {% for post in data %}
-            <div class="box">
-                {% if (post.sampul_path == null) %}
-                    <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="img img-thumbnail">
-                {% else %}
-                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="{{ post.sampul_name }}">
-                {% endif %}
-                <div class="box-body">
-                    <div class="user-date">
-                        <span>
-                            <i class="fa fa-user-alt"></i> {{ post.fullname }}
-                        </span>
-                        <span>
-                            <i class="fa fa-clock"></i> {{ post.date|date('d F Y') }}
-                        </span>
-                    </div>
-                    <div class="div-title">
-                        <a href="{{ path('blog', {slug: post.url }) }}" class="title">{{ post.title }}</a>
-                        <a href="{{ path('blog', {slug: post.url }) }}" target="_blank"><i class="fa fa-external-link"></i></a>
-                    </div>
-                    <div class="description">
-                        {{ post.summary }}
-                    </div>
-                    <div class="div-categories">
-                        {% for item in post.categories %}
-                            <a href="" class="categories">{{ item.name }}</a>
-                        {% endfor %}
+    <div class="container">
+        {% if search != null %}
+            <div class="alert">
+                Searching: {{ search }}
+            </div>            
+        {% endif %}
+    </div>
+    {% if data is empty %}
+        <div class="content">
+            {% if search != null %}
+                <div class="">
+                    Keyword Not Found...
+                </div>            
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="content">
+            {% for post in data %}
+                <div class="box">
+                    {% if (post.sampul_path == null) %}
+                        <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="img img-thumbnail">
+                    {% else %}
+                        <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="{{ post.sampul_name }}">
+                    {% endif %}
+                    <div class="box-body">
+                        <div class="user-date">
+                            <span>
+                                <i class="fa fa-user-alt"></i> {{ post.fullname }}
+                            </span>
+                            <span>
+                                <i class="fa fa-clock"></i> {{ post.date|date('d F Y') }}
+                            </span>
+                        </div>
+                        <div class="div-title">
+                            <a href="{{ path('blog', {slug: post.url }) }}" class="title">{{ post.title }}</a>
+                            <a href="{{ path('blog', {slug: post.url }) }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                        </div>
+                        <div class="description">
+                            {{ post.summary }}
+                        </div>
+                        <div class="div-categories">
+                            {% for item in post.categories %}
+                                <a href="" class="categories">{{ item.name }}</a>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="paging">
-        {% if pageBefore1 >= 1 %}
-            <div class="paging-previous">
-                <a href="{{ path('homepage', { page: pageBefore1 }) }}"><i class="fa fa-arrow-left"></i> Previous</a>
-            </div>
-        {% else %}
-            <div class="paging-previous">
-                
-            </div>
-        {% endif %}
-
-        <div class="paging-number">
-            <ul class="number">
-
-                {% set x = 1 %}
-                {% for x in 1..3 %}
-                    {% if pageBefore3 >= 1 %}
-                        <li><a href="{{ path('homepage', { page: pageBefore3 }) }}" class="number-item">{{ pageBefore3 }}</a></li>
-                    {% endif %}
-                    {% set pageBefore3 = pageBefore3 + 1 %}
-                    {% set x = x + 1 %}
-                {% endfor %}
-
-                <li class="active"><a href="{{ path('homepage', { page: page }) }}" class="number-item">{{ page }}</a></li>
-
-                {% set x = 1 %}
-                {% set currentPage = page %}
-                {% for x in 1..3 %}
-                    {% if currentPage <= (totalPage + 1) and currentPage != page %}
-                        <li><a href="{{ path('homepage', { page: currentPage }) }}" class="number-item">{{ currentPage }}</a></li>
-                    {% endif %}
-                    {% set currentPage = currentPage + 1 %}
-                    {% set x = x + 1 %}
-                {% endfor %}
-                
-            </ul>
+            {% endfor %}
         </div>
+        <div class="paging">
+            {% if pageBefore1 >= 1 %}
+                <div class="paging-previous">
+                    <a href="{{ path('homepage', { page: pageBefore1 }) }}"><i class="fa fa-arrow-left"></i> Previous</a>
+                </div>
+            {% else %}
+                <div class="paging-previous">
+                    
+                </div>
+            {% endif %}
 
-        {% if page <= totalPage %}
-            <div class="paging-next">
-                <a href="{{ path('homepage', { page: pageAfter1 }) }}">Next <i class="fa fa-arrow-right"></i></a>
+            <div class="paging-number">
+                <ul class="number">
+
+                    {% set x = 1 %}
+                    {% for x in 1..3 %}
+                        {% if pageBefore3 >= 1 %}
+                            <li><a href="{{ path('homepage', { page: pageBefore3 }) }}" class="number-item">{{ pageBefore3 }}</a></li>
+                        {% endif %}
+                        {% set pageBefore3 = pageBefore3 + 1 %}
+                        {% set x = x + 1 %}
+                    {% endfor %}
+
+                    <li class="active"><a href="{{ path('homepage', { page: page }) }}" class="number-item">{{ page }}</a></li>
+
+                    {% set x = 1 %}
+                    {% set currentPage = page %}
+                    {% for x in 1..3 %}
+                        {% if currentPage <= (totalPage + 1) and currentPage != page %}
+                            <li><a href="{{ path('homepage', { page: currentPage }) }}" class="number-item">{{ currentPage }}</a></li>
+                        {% endif %}
+                        {% set currentPage = currentPage + 1 %}
+                        {% set x = x + 1 %}
+                    {% endfor %}
+                    
+                </ul>
             </div>
-        {% else %}
-            <div class="paging-next">
-                
-            </div>
-        {% endif %}
-    </div>
+
+            {% if page <= totalPage %}
+                <div class="paging-next">
+                    <a href="{{ path('homepage', { page: pageAfter1 }) }}">Next <i class="fa fa-arrow-right"></i></a>
+                </div>
+            {% else %}
+                <div class="paging-next">
+                    
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
 </section>
 {% endblock %}

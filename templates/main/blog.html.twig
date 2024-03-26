@@ -26,6 +26,10 @@
                 {{ post.content|raw }}
             </div>
             <div class="blog-aside">
+                <form action="{{ path('homepage') }}" class="side-search">
+                    <input type="text" name="search" placeholder="search">
+                    <button type="submit">Search</button>
+                </form>
                 <h1>Recent Post</h1>
                 {% for recent in recents %}
                     <div class="box-aside">
@@ -35,7 +39,7 @@
                             <img src="{{ asset(image_directory ~ 'file/' ~ recent.sampul_path ) }}" alt="{{ recent.sampul_name }}">
                         {% endif %}
                         <div class="box-aside-body">
-                            <h3>{{ recent.title }}</h3>
+                            <a href="{{ path('blog', {slug: recent.url }) }}"><h3>{{ recent.title }}</h3></a>
                             <span>{{ recent.date|date('d F Y') }}</span>
                         </div>
                     </div>

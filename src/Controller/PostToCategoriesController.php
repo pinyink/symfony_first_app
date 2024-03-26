@@ -16,6 +16,8 @@ class PostToCategoriesController extends AbstractController
     #[Route('/post_to_categories/{id}', name: 'app_post_to_categories')]
     public function index(EntityManagerInterface $entityManagerInterface, int $id): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         $data = [];
 
         $emCategories = $entityManagerInterface->getRepository(Categories::class);
@@ -44,6 +46,8 @@ class PostToCategoriesController extends AbstractController
     #[Route(path: '/post_to_categories/{id}/save', name: 'app_post_to_categories_save', methods: ['POST'])]
     public function save(Request $request, EntityManagerInterface $em) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         $data = $request->request->all();
 
         $postToCategoriesEntity = new PostToCategories();
@@ -75,6 +79,8 @@ class PostToCategoriesController extends AbstractController
     #[Route(path: '/post_to_categories/{id}/remove', name: 'app_post_to_categories_remove', methods: ['POST'])]
     public function remove(EntityManagerInterface $em, Request $request) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+        
         $data = $request->request->all();
         $postToCategories = $em->getRepository(PostToCategories::class)->findOneBy(['post' => $data['post'], 'categories' => $data['categories']]);
         if (!$postToCategories) {

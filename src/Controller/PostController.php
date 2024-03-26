@@ -26,6 +26,7 @@ class PostController extends AbstractController
 	#[Route(path: '/post/ajax', name: 'app_post_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         $dataTable->setColumnOrder([null, null, 'title', 'summary']);
         $dataTable->setColumnSearch(['id', 'title', 'summary']);
         $dataTable->setTable('post');
@@ -55,6 +56,7 @@ class PostController extends AbstractController
 	#[Route('/post/{id}/show', name: 'app_post_show', methods: ['GET'])]
     public function show(Post $post): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         return $this->render('post/show.html.twig', [
             'post' => $post,
         ]);
@@ -63,6 +65,7 @@ class PostController extends AbstractController
 	#[Route(path: '/post/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
@@ -86,6 +89,7 @@ class PostController extends AbstractController
 	#[Route('/post/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if (!$post) {
             throw $this->createNotFoundException(
                 'No Post found for id '.$id
@@ -110,6 +114,7 @@ class PostController extends AbstractController
 	#[Route('/post/{id}/delete', name: 'app_post_delete', methods: ['POST'])]
     public function delete(EntityManagerInterface $entityManager, Request $request, Post $post): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
             $entityManager->remove($post);
             $entityManager->flush();
@@ -124,6 +129,7 @@ class PostController extends AbstractController
     #[Route('/post/{id}/sampul', name: 'app_post_sampul', methods: ['POST'])]
     public function sampul(int $id, Post $post, EntityManagerInterface $em, Request $request) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if (!$post) {
             return $this->json([
                 "info" => "danger",

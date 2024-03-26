@@ -20,6 +20,8 @@ class ProfilController extends AbstractController
     #[Route('/profil', name: 'app_profil', methods:['GET']), IsGranted('IS_AUTHENTICATED')]
     public function index(EntityManagerInterface $entityManager, FormFactoryInterface $formFactory): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         $user = $this->getUser()->getUserIdentifier();
         $dataUser = $entityManager->getRepository(User::class)->findOneBy(['username' => $user]);
         
@@ -35,6 +37,8 @@ class ProfilController extends AbstractController
     #[Route(path: '/profil_summary', name: 'app_profil_summary', methods: ['POST'])]
     public function profilSummary(Request $request, EntityManagerInterface $entityManager, FormFactoryInterface $formFactory, FileUploader $fileUploader) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+
         $username = $this->getUser()->getUserIdentifier();
         $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $username]);
         $formUser = $formFactory->createNamed('formprofil', ProfilSummaryType::class, $user);
@@ -62,6 +66,8 @@ class ProfilController extends AbstractController
     #[Route(path: '/profil_password', name: 'app_profil_password', methods: ['POST'])]
     public function profilPassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, FormFactoryInterface $formFactory) : Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
+        
         $data = $request->request->all();
         $username = $this->getUser()->getUserIdentifier();
 

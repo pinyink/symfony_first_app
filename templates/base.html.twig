@@ -14,15 +14,19 @@
 </head>
 <body>
     <header>
-        <div class="logo">Your Logo</div>
+        <div class="logo">
+            <a href="{{ path('homepage') }}">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo Pindipin" style="height: 40px;">
+            </a>
+        </div>
         <nav class="navbar" id="navbar">
             <ul class="menu">
-                <li><a href="#">Home</a></li>
+                <li><a href="{{ path('homepage') }}">Home</a></li>
                 <li><a href="#">Profil</a></li>
                 <li><a href="#">Contact Us</a></li>
             </ul>
             <ul class="header-right">
-                <li><a href="#">Login</a></li>
+                <li><a href="{{ path('login') }}">Login</a></li>
             </ul>
             <i class="fas fa-bars mobile-nav-toggle"></i>
         </nav>

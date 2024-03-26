@@ -207,9 +207,31 @@ header .navbar-mobile .menu li a:hover {
     font-weight: 400;
 }
 
+.side-search button:hover,
 #hero .search button:hover {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(0, 0, 0, 0.75);
     color: #fff;
+}
+
+.side-search {
+    margin-top: 10px;
+    display: flex;
+}
+
+.side-search input {
+    height: 26px;
+    width: 70%;
+}
+
+.side-search button {
+    height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0, 0.75);
+    color: rgb(0, 0, 0);
+    background-color: #fff;
+    margin-left: 10px;
+    font-weight: 400;
 }
 
 @media (max-width: 991px) {
@@ -257,6 +279,20 @@ header .navbar-mobile .menu li a:hover {
     flex-wrap: wrap;
     gap: 20px;
     min-height: 50vh;
+}
+
+.container {
+    width: calc(100% - 300px);
+    padding: 0 150px;
+    margin-bottom: 15px;
+}
+
+.alert {
+    border: 1px solid rgb(0, 0, 0, 0.75);
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .box {
@@ -329,6 +365,12 @@ a.categories:hover {
         width: calc(100% - 90px);
         padding: 15px 45px;
     }
+
+    .container {
+        width: calc(100% - 90px);
+        padding: 15px 45px;
+        margin-bottom: 5px;
+    }
     
     .box {
         width: 100%;
@@ -394,10 +436,15 @@ a.categories:hover {
     justify-content: space-around;
 }
 
-.box-aside-body h3 {
+.box-aside-body a h3 {
     margin-top: 0;
     margin-bottom: 0;
     font-weight: 600;
+}
+
+.box-aside-body a {
+    text-decoration: none;
+    color: rgb(0, 0, 0, 0.75);
 }
 
 @media screen and (max-width: 991px) {
@@ -467,6 +514,12 @@ a.categories:hover {
     border: 1px solid black;
     border-radius: 5px;
     background-color: #000;
+    color: #fff;
+}
+
+.number li:hover a,
+.number li.active a {
+    text-decoration: none;
     color: #fff;
 }
 
