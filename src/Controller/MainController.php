@@ -24,8 +24,12 @@ class MainController extends AbstractController
         $post = $entityManagerInterface->getRepository(Post::class);
         $kategori = $entityManagerInterface->getRepository(PostToCategories::class);
 
-        $where = [];
-        $param = [];
+        $where = [
+            'p.publish = :publish'
+        ];
+        $param = [
+            'publish' => '1'
+        ];
         if ($search != null) {
             $where[] = "p.title like :search";
             $param['search'] = '%'.$search.'%';
