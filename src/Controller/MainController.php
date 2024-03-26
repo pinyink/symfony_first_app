@@ -49,13 +49,17 @@ class MainController extends AbstractController
     #[Route('/{slug}', name: 'blog', methods: ['GET'])]
     public function blog(string $slug, EntityManagerInterface $entityManagerInterface) : Response
     {
-        $post = $entityManagerInterface->getRepository(Post::class)->findOneBy(['url' => $slug]);
-        if (!$post) {
+        $post = $entityManagerInterface->getRepository(Post::class);
+        $dataPost = $post->findOneBy(['url' => $slug]);
+        if (!$dataPost) {
             throw $this->createNotFoundException('Page Not Found');
             
         }
+
+        $recentPost = $post->data([], [], 3);
         return $this->render('main/blog.html.twig', [
-            'post' => $post
+            'post' => $dataPost,
+            'recents' => $recentPost
         ]);
     }
 }

@@ -20,34 +20,26 @@
         <div class="blog">
             <div class="blog-detail">
                 {% if (post.sampul != null) %}
-                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" class="img-blog" alt="">
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" class="img-blog" alt="{{ post.sampul.name }}">
                 {% endif %}
                 
                 {{ post.content|raw }}
             </div>
             <div class="blog-aside">
                 <h1>Recent Post</h1>
-                <div class="box-aside">
-                    <img src="assets/img/img_1.jpg" alt="">
-                    <div class="box-aside-body">
-                        <h3>Building your API Stack</h3>
-                        <span>22 Jan 2023</span>
+                {% for recent in recents %}
+                    <div class="box-aside">
+                        {% if recent.sampul_path == null %}
+                            <img src="{{ asset('img/image.jpg') }}" alt="">
+                        {% else %}
+                            <img src="{{ asset(image_directory ~ 'file/' ~ recent.sampul_path ) }}" alt="{{ recent.sampul_name }}">
+                        {% endif %}
+                        <div class="box-aside-body">
+                            <h3>{{ recent.title }}</h3>
+                            <span>{{ recent.date|date('d F Y') }}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="box-aside">
-                    <img src="assets/img/img_1.jpg" alt="">
-                    <div class="box-aside-body">
-                        <h3>Building your API Stack with lower script</h3>
-                        <span>22 Jan 2023</span>
-                    </div>
-                </div>
-                <div class="box-aside">
-                    <img src="assets/img/img_1.jpg" alt="">
-                    <div class="box-aside-body">
-                        <h3>Building your API Stack</h3>
-                        <span>22 Jan 2023</span>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

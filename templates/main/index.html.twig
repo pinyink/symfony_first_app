@@ -20,7 +20,7 @@
                 {% if (post.sampul_path == null) %}
                     <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="img img-thumbnail">
                 {% else %}
-                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="">
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="{{ post.sampul_name }}">
                 {% endif %}
                 <div class="box-body">
                     <div class="user-date">
