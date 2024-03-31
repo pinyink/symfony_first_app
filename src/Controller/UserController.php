@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/user'), IsGranted('ROLE_ADMIN')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'app_user_index', methods: ['GET'])]
+    #[Route('/index', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('user/index.html.twig', [
@@ -26,7 +26,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/user_ajax', name: 'app_user_ajax', methods: ['GET', 'POST'])]
+    #[Route(path: '/ajax', name: 'app_user_ajax', methods: ['GET', 'POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
         $dataTable->setColumnOrder(['username', 'fullname']);
