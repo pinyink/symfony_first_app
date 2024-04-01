@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    #[Route('/product', name: 'app_product')]
+    #[Route('/product/index', name: 'app_product')]
     public function index(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
@@ -21,7 +21,7 @@ class ProductController extends AbstractController
         ]);
     }
 
-	#[Route(path: '/product_ajax', name: 'app_product_ajax', methods: ['POST'])]
+	#[Route(path: '/product/ajax', name: 'app_product_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
         $dataTable->setColumnOrder([null, null, 'nama', 'harga']);

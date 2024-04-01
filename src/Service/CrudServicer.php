@@ -30,7 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ".$data['crud']['entity']."Controller extends AbstractController
 {
-    #[Route('/".$data['crud']['route']."', name: 'app_".$data['crud']['route']."')]
+    #[Route('/".$data['crud']['route']."/index', name: 'app_".$data['crud']['route']."')]
     public function index(): Response
     {
         \$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
@@ -51,7 +51,7 @@ class ".$data['crud']['entity']."Controller extends AbstractController
     }
     $searchDatatable .= "]";
     $orderDatatable .= "]";
-$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."_ajax', name: 'app_".$data['crud']['route']."_ajax', methods: ['POST'])]
+$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/ajax', name: 'app_".$data['crud']['route']."_ajax', methods: ['POST'])]
     public function ajax(DataTableService \$dataTable, EntityManagerInterface \$entityManager, Request \$request) : Response
     {
         \$dataTable->setColumnOrder(".$orderDatatable.");
