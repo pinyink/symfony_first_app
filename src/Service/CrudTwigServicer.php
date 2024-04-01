@@ -291,20 +291,20 @@ class CrudTwigServicer
         $table = "<table class=\"table\">";
         foreach ($this->data['fields'] as $key => $value) {
             if ($value['type'] == 3) {
-                $table .= "<tr>
-                <td style=\"width: 20%\">".$value['label']."</td>
-                <td style=\"width: 5%;\">:</td>
-                <td style=\"width: 75%;\">{{ image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." }} <br><img src=\"{{ asset(image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." ) }}\" alt=\"\" class=\"img img-thumbnail img-preview \" style=\"width: 100px; height: 100px;\"></td>
-            </tr>";
+                $table .= "\n\t\t\t\t\t<tr>
+                        <td style=\"width: 20%\">".$value['label']."</td>
+                        <td style=\"width: 5%;\">:</td>
+                        <td style=\"width: 75%;\">{{ image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." }} <br><img src=\"{{ asset(image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." ) }}\" alt=\"\" class=\"img img-thumbnail img-preview \" style=\"width: 100px; height: 100px;\"></td>
+                    </tr>";
             } else {
-                $table .= "<tr>
-                <td style=\"width: 20%\">".$value['label']."</td>
-                <td style=\"width: 5%;\">:</td>
-                <td style=\"width: 75%;\">{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
-            </tr>";
+                $table .= "\n\t\t\t\t\t<tr>
+                        <td style=\"width: 20%\">".$value['label']."</td>
+                        <td style=\"width: 5%;\">:</td>
+                        <td style=\"width: 75%;\">{{ ".strtolower($this->data['crud']['entity']).".".$value['name']." }}</td>
+                    </tr>";
             }
         }
-        $table .= "</table>";
+        $table .= "\n\t\t\t\t</table>";
         $string = "{% extends 'adminlte.html.twig' %}
 
 {% block title %}".$this->data['crud']['entity']."{% endblock %}

@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class ProductController extends AbstractController
 {
     #[Route('/product/index', name: 'app_product')]
@@ -59,12 +60,17 @@ class ProductController extends AbstractController
     }
 
 	#[Route(path: '/product/new', name: 'app_product_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ): Response
     {
         $product = new Product();
+
+        $product->setHarga(number_format($product->getHarga(), 0, ',', '.'));
+
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $harga = $form->get('harga')->getData();
+            $product->setHarga(str_replace('.', '', $harga));
             $entityManager->persist($product);
             $entityManager->flush();
             $this->addFlash('success', 'Simpan Data Berhasil');
@@ -77,17 +83,23 @@ class ProductController extends AbstractController
     }
 
 	#[Route('/product/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Product $product, int $id, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Product $product, int $id, EntityManagerInterface $entityManager, ): Response
     {
         if (!$product) {
             throw $this->createNotFoundException(
                 'No Product found for id '.$id
             );
         }
+
+        $product->setHarga(number_format($product->getHarga(), 0, ',', '.'));
+
+
         $form = $this->createForm(producttype::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $harga = $form->get('harga')->getData();
+            $product->setHarga(str_replace('.', '', $harga));
             $entityManager->flush();
             $this->addFlash('success', 'Edit Data Berhasil');
             return $this->redirectToRoute('app_product_edit', ['id' => $product->getId()], Response::HTTP_SEE_OTHER);

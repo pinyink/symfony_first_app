@@ -87,6 +87,11 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".
     }";
 
     $arrayParams = [];
+
+    // set Data Before
+    $setBeforeData = "";
+
+    // set Data After Submit Form
     $setData = "";
     foreach ($data['fields'] as $key => $value) {
         // jika type image
@@ -103,6 +108,14 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".
                 \$".strtolower($data['crud']['entity'])."->set".ucwords($value['name'])."(\$".$value['name']."FileName);
             }";
         }
+
+        // jika Rupiah 
+        if ($value['type'] == 4) {
+            $setBeforeData .= "\$".strtolower($data['crud']['entity'])."->set".ucwords(strtolower($value['name']))."(number_format(\$".strtolower($data['crud']['entity'])."->get".ucwords(strtolower($value['name']))."(), 0, ',', '.'));";
+
+            $setData .= "\$".$value['name']." = \$form->get('".$value['name']."')->getData();
+            \$".strtolower($data['crud']['entity'])."->set".ucwords(strtolower($value['name']))."(str_replace('.', '', \$".$value['name']."));";
+        }
     }
     $arrayParamsUnique = array_unique($arrayParams);
     $stringParams = implode(", ", $arrayParamsUnique);
@@ -110,6 +123,9 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".
     public function new(Request \$request, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity']."();
+
+        ".$setBeforeData."
+
         \$form = \$this->createForm(".$data['crud']['form']."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
         if (\$form->isSubmitted() && \$form->isValid()) {
@@ -132,6 +148,10 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".
                 'No ".$data['crud']['entity']." found for id '.\$id
             );
         }
+
+        ".$setBeforeData."
+
+
         \$form = \$this->createForm(".strtolower($data['crud']['form'])."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
 
@@ -211,6 +231,17 @@ $string .= "\n}";
             ])";
                 array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\FileType as FileTypeType;');
                 array_push($arrayUse, 'use Symfony\Component\Validator\Constraints\File as FileConstraints;');
+            }
+
+            // if Rupiah
+            if ($value['type'] == 4) {
+                $form .= "\n\t\t\t->add('".$value['name']."', TextType::class, [
+                'label' => '".$value['label']."',
+                'attr' => [
+                    'onkeyup' => 'formatRupiah(\"".strtolower($data['crud']['entity'])."_".strtolower($value['name'])."\")',
+                    'onkeydown' => 'formatRupiah(\"".strtolower($data['crud']['entity'])."_".strtolower($value['name'])."\")'
+                ]
+            ])";
             }
         }
         $arrayUseUnique = array_unique($arrayUse);
