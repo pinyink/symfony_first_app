@@ -44,7 +44,11 @@ class ".$data['crud']['entity']."Controller extends AbstractController
     $orderDatatable = "[null, null";
     foreach ($data['fields'] as $key => $value) {
         if ($value['datatable'] == 1) {
-            $fieldDatatable .= "\n\t\t\t\$row[] = \$value['".$value['name']."'];";
+            if ($value['type'] == 4) {
+                $fieldDatatable .= "\n\t\t\t\$row[] = number_format(\$value['".$value['name']."'], 0, ',', '.');";
+            } else {
+                $fieldDatatable .= "\n\t\t\t\$row[] = \$value['".$value['name']."'];";
+            }
             $searchDatatable .= ", '".$value['name']."'";
             $orderDatatable .= ", '".$value['name']."'";
         }

@@ -296,6 +296,12 @@ class CrudTwigServicer
                         <td style=\"width: 5%;\">:</td>
                         <td style=\"width: 75%;\">{{ image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." }} <br><img src=\"{{ asset(image_directory ~ '".strtolower($this->data['crud']['entity'])."/' ~ ".strtolower($this->data['crud']['entity']).".".$value['name']." ) }}\" alt=\"\" class=\"img img-thumbnail img-preview \" style=\"width: 100px; height: 100px;\"></td>
                     </tr>";
+            } if($value['type'] == 4 ) {
+                $table .= "\n\t\t\t\t\t<tr>
+                        <td style=\"width: 20%\">".$value['label']."</td>
+                        <td style=\"width: 5%;\">:</td>
+                        <td style=\"width: 75%;\">{{ ".strtolower($this->data['crud']['entity']).".".$value['name']."|number_format(0, ',', '.') }}</td>
+                    </tr>";
             } else {
                 $table .= "\n\t\t\t\t\t<tr>
                         <td style=\"width: 20%\">".$value['label']."</td>

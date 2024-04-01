@@ -49,7 +49,7 @@
 					<tr>
                         <td style="width: 20%">Harga</td>
                         <td style="width: 5%;">:</td>
-                        <td style="width: 75%;">{{ product.harga }}</td>
+                        <td style="width: 75%;">{{ product.harga|number_format(0, ',', '.') }}</td>
                     </tr>
 				</table>
             </div>

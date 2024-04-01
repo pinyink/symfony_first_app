@@ -38,7 +38,7 @@ class ProductController extends AbstractController
             $row[] = $no;
             $row[] = "<a href='".$this->generateUrl('app_product_show', ['id' => $value['id']])."' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>";
 			$row[] = $value['nama'];
-			$row[] = $value['harga'];
+			$row[] = number_format($value['harga'], 0, ',', '.');
             $data[] = $row;
             $no++;
         }
