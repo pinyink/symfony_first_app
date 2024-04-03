@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ post.summary }}">
+{% endblock %}
 
 {% block body %}
 <section id="hero">
