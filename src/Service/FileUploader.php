@@ -9,6 +9,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class FileUploader
 {
     private string $targetDirectory;
+    private string $dir;
 
     public function __construct(
         private SluggerInterface $slugger,
@@ -20,14 +21,19 @@ class FileUploader
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-        $dir = date('Y').'/'.date('m').'/'.date('d').'/';
+        $path = date('Y').'/'.date('m').'/'.date('d').'/';
         try {
-            $file->move($this->getTargetDirectory().'/'.$dir, $fileName);
+            if ($this->getDir() == null) {
+                $file->move($this->getTargetDirectory().'/'.$path, $fileName);
+            } else {
+                $file->move($this->getTargetDirectory().'/'.$this->getDir().'/'.$path, $fileName);
+            }
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
+            return $e->getMessage();
         }
 
-        return $dir.$fileName;
+        return $path.$fileName;
     }
 
     public function getTargetDirectory(): string
@@ -38,6 +44,26 @@ class FileUploader
     public function setTargetDirectory(String $parameter): static
     {
         $this->targetDirectory = $parameter;
+        return $this;
+    }
+
+    /**
+     * Get the value of dir
+     */ 
+    public function getDir()
+    {
+        return $this->dir;
+    }
+
+    /**
+     * Set the value of dir
+     *
+     * @return  self
+     */ 
+    public function setDir($dir)
+    {
+        $this->dir = $dir;
+
         return $this;
     }
 }
