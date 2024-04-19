@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\FileUploader;
 use App\Service\FormatSize;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class FileController extends AbstractController
@@ -122,13 +123,44 @@ class FileController extends AbstractController
         ]);
     }
 
+    #[Route('/file/{id}/check', name: 'app_file_check', methods: ['GET'])]
+    public function check(EntityManagerInterface $entityManager, int $id, File $file) : Response
+    {
+        if (!$file) {
+            throw $this->createNotFoundException(
+                'No File found for id '.$id
+            );
+        }
+
+        $t = '';
+
+        $filesystem = new Filesystem();
+        $exitst = $filesystem->exists($this->getParameter('image_directory').'/file/'.$file->getPath());
+        if ($exitst) {
+            $t = 'Ada';
+        } else {
+            $t = 'Tidak Ada';
+        }
+        
+        return $this->json(
+            ['status' => $t]
+        );
+    }
+
 	#[Route('/file/{id}/delete', name: 'app_file_delete', methods: ['POST'])]
     public function delete(EntityManagerInterface $entityManager, Request $request, File $file): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
         if ($this->isCsrfTokenValid('delete'.$file->getId(), $request->request->get('_token'))) {
+            $filesystem = new Filesystem();
+            $path = $this->getParameter('image_directory').'/file/'.$file->getPath();
             $entityManager->remove($file);
-            $entityManager->flush();
+            $query = $entityManager->flush();
+            // remove file
+            $exitst = $filesystem->exists($path);
+            if ($exitst) {
+                $filesystem->remove($path);
+            }
         }
 
         return $this->json([

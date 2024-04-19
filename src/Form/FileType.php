@@ -27,7 +27,7 @@ class FileType extends AbstractType
 			->add('path', FileTypeType::class, [
                 'label' => 'Image',
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
                 'constraints' => [
                     new FileConstraints([
                         'maxSize' => '2048k',
