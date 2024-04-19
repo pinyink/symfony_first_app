@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\FileUploader;
 use App\Service\FormatSize;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class FileController extends AbstractController
 {
@@ -74,6 +75,7 @@ class FileController extends AbstractController
             if ($path) {
                 $dir = $this->getParameter('image_directory');
                 $fileUploader->setTargetDirectory($dir.'/file');
+                $fileUploader->setDir('');
                 $pathFileName = $fileUploader->upload($path);
                 $file->setPath($pathFileName);
                 $size = filesize($dir.'/file/'.$pathFileName);
@@ -99,20 +101,15 @@ class FileController extends AbstractController
                 'No File found for id '.$id
             );
         }
-        $file->setSize($formatSize->formatSizeUnits($file->getSize()));
-        $form = $this->createForm(filetype::class, $file);
+        $size = $formatSize->formatSizeUnits($file->getSize());
+        $form = $this->createFormBuilder($file)
+                ->add('name', TextType::class, [
+                    'label' => 'Name'
+                ])
+                ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $path = $form->get('path')->getData();
-            if ($path) {
-                $dir = $this->getParameter('image_directory');
-                $fileUploader->setTargetDirectory($dir.'/file');
-                $pathFileName = $fileUploader->upload($path);
-                $file->setPath($pathFileName);
-                $size = filesize($dir.'/file/'.$pathFileName);
-                $file->setSize($size);
-            }
             $entityManager->flush();
             $this->addFlash('success', 'Edit Data Berhasil');
             return $this->redirectToRoute('app_file_edit', ['id' => $file->getId()], Response::HTTP_SEE_OTHER);
@@ -120,7 +117,8 @@ class FileController extends AbstractController
 
         return $this->render('file/edit.html.twig', [
             'file' => $file,
-            'form' => $form
+            'form' => $form,
+            'size' => $size
         ]);
     }
 

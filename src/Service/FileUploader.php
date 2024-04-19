@@ -12,8 +12,9 @@ class FileUploader
     private string $dir;
 
     public function __construct(
-        private SluggerInterface $slugger,
+        private SluggerInterface $slugger
     ) {
+        
     }
 
     public function upload(UploadedFile $file): string
@@ -21,7 +22,7 @@ class FileUploader
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-        $path = date('Y').'/'.date('m').'/'.date('d').'/';
+        $path = date('Y/m/d/');
         try {
             if ($this->getDir() == null) {
                 $file->move($this->getTargetDirectory().'/'.$path, $fileName);
