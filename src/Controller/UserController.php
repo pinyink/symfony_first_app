@@ -27,29 +27,29 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/ajax', name: 'app_user_ajax', methods: ['GET', 'POST'])]
-    public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
-    {
-        $dataTable->setColumnOrder(['username', 'fullname']);
-        $dataTable->setColumnSearch(['username', 'fullname']);
-        $dataTable->setTable('user');
-        $dataTable->setQuery('select * from user');
-        $queryResult = $dataTable->getData($entityManager, $request);
-        $data = [];
-        foreach ($queryResult['data'] as $key => $value) {
-            $row = array();
-            $row[] = $value['id'];
-            $row[] = $value['username'];
-            $row[] = $value['fullname'];
-            $row[] = "<a href='".$this->generateUrl('app_user_edit', ['id' => $value['id']])."' class='btn btn-info'>edit</a>";
-            $data[] = $row;
+    public function ajax(DataTableService $dataTable, UserRepository $userRepository, Request $request) : Response
+    {        
+        $perPage = $request->get('row');
+        $page = $request->get('page') == null || $request->get('page') == 0 ? 1 : $request->get('page');
+        $offset = $page != 1 ? ($page - 1) * $perPage : 0;
+
+        $username = $request->get('username');
+        
+        $where = [];
+        $param = [];
+
+        if ($username != null) {
+            $where[] = "f.username like :username";
+            $param['username'] = '%'.$username.'%';
         }
-        $output = [
-            "draw" => 0,
-            "recordsTotal" => $queryResult['count'],
-            "recordsFiltered" => $queryResult['filter'],
-            "data" => $data,
-        ];
-        return $this->json($output);
+
+        $data = $userRepository->data($where, $param, $perPage, $offset);
+        
+        return $this->json([
+            'data' => $data,
+            'currentPage' => $page,
+            'where' => $where
+        ]);
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
@@ -70,6 +70,7 @@ class UserController extends AbstractController
             $foto = $form->get('foto')->getData();
             if ($foto) {
                 $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setDir('');
                 $fileUploader->setTargetDirectory($dir);
                 $fotoFileName = $fileUploader->upload($foto);
                 $user->setFoto($fotoFileName);
@@ -115,6 +116,7 @@ class UserController extends AbstractController
             $foto = $form->get('foto')->getData();
             if ($foto) {
                 $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setDir('');
                 $fileUploader->setTargetDirectory($dir);
                 $fotoFileName = $fileUploader->upload($foto);
                 $user->setFoto($fotoFileName);

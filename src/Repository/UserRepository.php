@@ -39,6 +39,44 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function data($where = [], $params = [], $limit = 10, $offset = 0): array
+    {
+        $query = $this->createQueryBuilder('f');
+        $query->select('f.id, f.username, f.fullname, f.foto');
+        if (!empty($where)) {
+            foreach ($where as $key => $value) {
+                $query->andWhere($value);
+            }
+        }
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->setParameter($key, $value);
+            }
+        }
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        return $query->getQuery()->getResult();
+    }
+
+    public function total() : int
+    {
+        $query = $this->createQueryBuilder('f')
+            ->select('count(f.id) as total');
+        if (!empty($where)) {
+            foreach ($where as $key => $value) {
+                $query->andWhere($value);
+            }
+        }
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->setParameter($key, $value);
+            }
+        }
+        $query->getQuery()
+            ->getOneOrNullResult();
+        return $query['total'];
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

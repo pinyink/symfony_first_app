@@ -27,34 +27,43 @@
                 {{ message }}
             </div>
         {% endfor %}
-        <div class="card">
+        <div class="card card-dark card-outline">
             <div class="card-header">
-                <h3 class="card-title">Title</h3>
-                <div class="card-tools">
-                    <a href="{{ path('app_user_new')}}" class="btn btn-tool">
-                        <i class="fas fa-plus"></i>
-                    </a>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
+                <h3 class="card-title">Pencarian</h3>
+            </div>
+            <form name="form_search">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="row">Row</label>
+                                <select name="row" id="row" class="form-control">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name="username">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary fa-pull-right"><i class="fa fa-search"></i> Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card card-solid" id="cardUser">
+            <div class="card-body pb-0">
+                <div class="row" id="div_row">
+                    
                 </div>
             </div>
-            <div class="card-body">
-                <table class="table" id="example">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>username</th>
-                            <th>fullname</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    
-                    </tbody>
-                </table>
-            </div>
-
         </div>
 
     </section>
@@ -66,38 +75,68 @@
 {% block javascripts %}
     <script>
         $(document).ready(function () {
-            table = $('#example').DataTable({
-                scrollCollapse: true,
-                responsive: true,
-                autoWidth: false,
-                language: { search: "",
-                    searchPlaceholder: "Search",
-                    sLengthMenu: "_MENU_items"
-                },
-                "order": [],
-                "ajax": {
-                    "url": " {{ path('app_user_ajax') }}",
-                    "headers": {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    "type": "POST",
-                    "data": function(data) {
-                        data.token = $('meta[name=TOKEN]').attr("content");
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR.responseText);
-                    }
-                },
-                //optional
-                "columnDefs": [{
-                    "targets": [2],
-                    "orderable": false,
-                }, ],
-            });
+            reload_data();
+        });
+
+        $('[name="form_search"]').submit(function (e) { 
+            e.preventDefault();
+            reload_data();
         });
         
-        function reload_table() {
-            table.ajax.reload(null, false);
+        function reload_data() {
+            cardOverlayStart('cardUser');
+            var profil_dir = '/{{ foto_profil_directory }}';
+            $.ajax({
+                type: "POST",
+                url: "{{ path('app_user_ajax') }}",
+                data: $('[name="form_search"]').serialize(),
+                dataType: "JSON",
+                success: function (response) {
+                    var html = ``;
+                    var data = response.data;
+                    if (data.length < 1) {
+                        html = `<div class="col-md-12"><div class="alert alert-info">No Data Display</div></div>`;
+                    }
+                    $.each(data, function (indexInArray, valueOfElement) { 
+                        var profilImage = '{{ asset('img/image.jpg') }}';
+                        if (valueOfElement.foto != '' || valueOfElement.foto != null) {
+                            profilImage = profil_dir + valueOfElement.foto;
+                        }
+                        html += `<div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header text-muted border-bottom-0">
+                                `+valueOfElement.username+`
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <h2 class="lead"><b>`+valueOfElement.fullname+`</b></h2>
+                                    </div>
+                                    <div class="col-5 text-center">
+                                        <img src="`+profilImage+`" alt="user-avatar"
+                                            class="img-circle img-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="text-right">
+                                    <a href="/user/`+valueOfElement.id+`/edit" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                    });
+                    $('#div_row').html(html);
+                    cardOverlayStop('cardUser');
+
+                    console.log(response);
+                },
+                error: function (jqXHR) {
+                    console.log(jqXHR.responseText);
+                }
+            });
         }
     </script>
 {% endblock %}

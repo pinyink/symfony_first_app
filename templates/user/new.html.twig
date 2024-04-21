@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="card-body">
-                {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+                {{ include('user/_form.html.twig', {'button_label': 'Save'}) }}
             </div>
 
         </div>
@@ -50,4 +50,15 @@
 
 </div>
 
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(document).ready(function () {
+        $("#user_foto").change(function(e) {
+            file_select(e, 'path');
+        });
+    });
+</script>
+    
 {% endblock %}

@@ -1,4 +1,24 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.username) }}
+    {{ form_row(form.pass) }}
+    {{ form_row(form.fullname) }}
+    {{ form_row(form.admin) }}
+    {{ form_row(form.foto) }}
+    <div class="row mb-2">
+        {% if (button_label != 'Update') %}
+            <div class="col-md-2" id="divimage_path">
+                <img src="{{ asset('img/image.jpg') }}" alt="" class="img img-thumbnail img-preview " id="img-preview-path" style="width: 100px; height: 100px;">
+            </div>
+        {% endif %}
+        {% if (button_label == 'Update') %}
+            <div class="col-md-2" id="divimage_path">
+                <img src="{{ asset('img/image.jpg') }}" alt="" class="img img-thumbnail img-preview " id="img-preview-path" style="width: 100px; height: 100px;">
+            </div>
+            <div class="col-md-2" id="divcol_path">
+                <img src="{{ asset(foto_profil_directory ~ user.foto) }}" alt="" class="img img-thumbnail img-preview" id="img-old-path" style="width: 100px; height: 100px;">
+            </div>
+        {% endif %}
+    </div>
+    <hr>
     <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

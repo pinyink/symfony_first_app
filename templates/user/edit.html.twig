@@ -58,4 +58,13 @@
             $('#user_admin').val('{{ priv }}');
         });
     </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#user_foto").change(function(e) {
+                file_select(e, 'path');
+            });
+        });
+</script>
+    
 {% endblock %}
