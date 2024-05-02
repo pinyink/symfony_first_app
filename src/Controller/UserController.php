@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use App\Service\DataTableService;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,9 +26,9 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/ajax', name: 'app_user_ajax', methods: ['GET', 'POST'])]
-    public function ajax(DataTableService $dataTable, UserRepository $userRepository, Request $request) : Response
+    public function ajax(UserRepository $userRepository, Request $request) : Response
     {        
-        $perPage = $request->get('row');
+        $perPage = $request->get('row') == null ? 10 : $request->get('row');
         $page = $request->get('page') == null || $request->get('page') == 0 ? 1 : $request->get('page');
         $offset = $page != 1 ? ($page - 1) * $perPage : 0;
 
@@ -44,11 +43,15 @@ class UserController extends AbstractController
         }
 
         $data = $userRepository->data($where, $param, $perPage, $offset);
+        $total = $userRepository->total();
         
         return $this->json([
             'data' => $data,
-            'currentPage' => $page,
-            'where' => $where
+            // 'currentPage' => $page,
+            'where' => $where,
+            // 'total' => ceil($total / $perPage)
+            'currentPage' => 4,
+            'total' => 10
         ]);
     }
 

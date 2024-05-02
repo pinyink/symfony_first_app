@@ -61,18 +61,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function total() : int
     {
         $query = $this->createQueryBuilder('f')
-            ->select('count(f.id) as total');
-        if (!empty($where)) {
-            foreach ($where as $key => $value) {
-                $query->andWhere($value);
-            }
-        }
-        if (!empty($params)) {
-            foreach ($params as $key => $value) {
-                $query->setParameter($key, $value);
-            }
-        }
-        $query->getQuery()
+            ->select('count(f.id) as total')
+            ->getQuery()
             ->getOneOrNullResult();
         return $query['total'];
     }

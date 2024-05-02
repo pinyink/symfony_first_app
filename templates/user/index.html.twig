@@ -64,6 +64,16 @@
                     
                 </div>
             </div>
+            <div class="card-footer">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    
+                </ul>
+            </div>
         </div>
 
     </section>
@@ -73,6 +83,7 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="{{ asset('assets/library/jquery-pagination/dist/jq-paginator.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             reload_data();
@@ -129,6 +140,19 @@
                     </div>`;
                     });
                     $('#div_row').html(html);
+
+                    //pagination
+                    $.jqPaginator('#pagination2', {
+                        totalPages: response.total,
+                        visiblePages: 3,
+                        currentPage: response.currentPage,
+                        prev: '<li class="prev"><a href="javascript:;">Previous</a></li>',
+                        next: '<li class="next"><a href="javascript:;">Next</a></li>',
+                        page: '<li class="page"><a href="javascript:;">{{ '{{page}}' }}</a></li>',
+                        onPageChange: function (num, type) {
+                            $('#p2').text(type + '：' + num);
+                        }
+                    });
                     cardOverlayStop('cardUser');
                 },
                 error: function (jqXHR) {
