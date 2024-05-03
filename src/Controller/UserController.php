@@ -47,11 +47,9 @@ class UserController extends AbstractController
         
         return $this->json([
             'data' => $data,
-            // 'currentPage' => $page,
+            'currentPage' => intval($page),
             'where' => $where,
-            // 'total' => ceil($total / $perPage)
-            'currentPage' => 4,
-            'total' => 10
+            'total' => ceil($total / $perPage)
         ]);
     }
 
