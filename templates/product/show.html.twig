@@ -47,9 +47,14 @@
                         <td style="width: 75%;">{{ product.nama }}</td>
                     </tr>
 					<tr>
-                        <td style="width: 20%">Harga</td>
-                        <td style="width: 5%;">:</td>
-                        <td style="width: 75%;">{{ product.harga|number_format(0, ',', '.') }}</td>
+                        <td>Harga</td>
+                        <td>:</td>
+                        <td>{{ product.harga|number_format(0, ',', '.') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Categories</td>
+                        <td>:</td>
+                        <td>{{ product.categories.name }}</td>
                     </tr>
 				</table>
             </div>
