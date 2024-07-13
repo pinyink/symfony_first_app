@@ -47,6 +47,7 @@ class ProfilController extends AbstractController
             $foto = $formUser->get('foto')->getData();
             if ($foto) {
                 $dir = $this->getParameter('foto_profil_directory');
+                $fileUploader->setDir('');
                 $fileUploader->setTargetDirectory($dir);
                 $fotoFileName = $fileUploader->upload($foto);
                 $user->setFoto($fotoFileName);
