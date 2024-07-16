@@ -35,6 +35,7 @@ class ProductType extends AbstractType
                         ->orderBy('u.name', 'ASC');
                 },
                 'choice_label' => 'name',
+                
             ])
         ;
     }
