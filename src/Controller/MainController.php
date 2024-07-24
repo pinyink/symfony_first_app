@@ -60,7 +60,7 @@ class MainController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'blog', methods: ['GET'])]
+    #[Route('/article/{slug}', name: 'blog', methods: ['GET'])]
     public function blog(string $slug, EntityManagerInterface $entityManagerInterface) : Response
     {
         $post = $entityManagerInterface->getRepository(Post::class);
