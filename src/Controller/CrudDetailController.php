@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Crud;
 use App\Entity\CrudDetail;
+use App\Entity\Product;
 use App\Repository\CrudDetailRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +24,7 @@ class CrudDetailController extends AbstractController
             );
         }
 
-        $class = $entitiyManager->getClassMetadata('Product');
+        $class = $entitiyManager->getClassMetadata(Product::class);
         $fields = [];
         if (!empty($class->discriminatorColumn)) {
             $fields[] = $class->discriminatorColumn['name'];
@@ -43,7 +44,7 @@ class CrudDetailController extends AbstractController
         }
         return $this->render('crud_detail/index.html.twig', [
             'crud' => $crud,
-            'fields' => $field
+            'fields' => $fields
         ]);
     }
 
