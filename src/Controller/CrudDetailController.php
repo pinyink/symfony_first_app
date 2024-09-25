@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Crud;
 use App\Entity\CrudDetail;
+use App\Entity\Product;
 use App\Repository\CrudDetailRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +23,28 @@ class CrudDetailController extends AbstractController
                 'Id Not Found For Id: '.$id
             );
         }
+
+        $class = $entitiyManager->getClassMetadata(Product::class);
+        $fields = [];
+        if (!empty($class->discriminatorColumn)) {
+            $fields[] = $class->discriminatorColumn['name'];
+        }
+        $fields = array_merge($class->getColumnNames(), $fields);
+        foreach ($fields as $index => $field) {
+            if ($class->isInheritedField($field)) {
+                unset($fields[$index]);
+            }
+        }
+        foreach ($class->getAssociationMappings() as $name => $relation) {
+            if (!$class->isInheritedAssociation($name)){
+                foreach ($relation['joinColumns'] as $joinColumn) {
+                    $fields[] = $joinColumn['name'];
+                }
+            }
+        }
         return $this->render('crud_detail/index.html.twig', [
             'crud' => $crud,
+            'fields' => $fields
         ]);
     }
 
