@@ -63,7 +63,7 @@ class CrudController extends AbstractController
             $entityManager->persist($crud);
             $entityManager->flush();
             $this->addFlash('success', 'Simpan Berhasil');
-            return $this->redirectToRoute('app_crud_edit', ['id' => $crud->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_crud_detail', ['id' => $crud->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('crud/new.html.twig', [
@@ -89,7 +89,7 @@ class CrudController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'Update Berhasil');
-            return $this->redirectToRoute('app_crud_edit', ['id' => $crud->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_crud_detail', ['id' => $crud->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('crud/edit.html.twig', [

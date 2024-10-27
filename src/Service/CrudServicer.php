@@ -30,12 +30,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ".$data['crud']['entity']."Controller extends AbstractController
 {
-    #[Route('/".$data['crud']['route']."/index', name: 'app_".$data['crud']['route']."')]
+    #[Route('/".strtolower($data['crud']['route'])."/index', name: 'app_".strtolower($data['crud']['route'])."')]
     public function index(): Response
     {
         \$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
 
-        return \$this->render('".$data['crud']['route']."/index.html.twig', [
+        return \$this->render('".strtolower($data['crud']['route'])."/index.html.twig', [
         ]);
     }";
 
@@ -55,7 +55,7 @@ class ".$data['crud']['entity']."Controller extends AbstractController
     }
     $searchDatatable .= "]";
     $orderDatatable .= "]";
-$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/ajax', name: 'app_".$data['crud']['route']."_ajax', methods: ['POST'])]
+$string .= "\n\n\t#[Route(path: '/".strtolower($data['crud']['route'])."/ajax', name: 'app_".strtolower($data['crud']['route'])."_ajax', methods: ['POST'])]
     public function ajax(DataTableService \$dataTable, EntityManagerInterface \$entityManager, Request \$request) : Response
     {
         \$dataTable->setColumnOrder(".$orderDatatable.");
@@ -69,7 +69,7 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/ajax', name: 'app_"
         foreach (\$queryResult['data'] as \$key => \$value) {
             \$row = array();
             \$row[] = \$no;
-            \$row[] = \"<a href='\".\$this->generateUrl('app_".$data['crud']['route']."_show', ['id' => \$value['id']]).\"' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='\".\$this->generateUrl('app_".$data['crud']['route']."_edit', ['id' => \$value['id']]).\"' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>\";".$fieldDatatable."
+            \$row[] = \"<a href='\".\$this->generateUrl('app_".strtolower($data['crud']['route'])."_show', ['id' => \$value['id']]).\"' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='\".\$this->generateUrl('app_".strtolower($data['crud']['route'])."_edit', ['id' => \$value['id']]).\"' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>\";".$fieldDatatable."
             \$data[] = \$row;
             \$no++;
         }
@@ -82,10 +82,10 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/ajax', name: 'app_"
         return \$this->json(\$output);
     }";
 
-$string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".$data['crud']['route']."_show', methods: ['GET'])]
+$string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/show', name: 'app_".strtolower($data['crud']['route'])."_show', methods: ['GET'])]
     public function show(".$data['crud']['entity']." \$".strtolower($data['crud']['entity'])."): Response
     {
-        return \$this->render('".$data['crud']['route']."/show.html.twig', [
+        return \$this->render('".strtolower($data['crud']['route'])."/show.html.twig', [
             '".strtolower($data['crud']['entity'])."' => \$".strtolower($data['crud']['entity']).",
         ]);
     }";
@@ -123,7 +123,7 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/show', name: 'app_".
     }
     $arrayParamsUnique = array_unique($arrayParams);
     $stringParams = implode(", ", $arrayParamsUnique);
-$string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".$data['crud']['route']."_new', methods: ['GET', 'POST'])]
+$string .= "\n\n\t#[Route(path: '/".strtolower($data['crud']['route'])."/new', name: 'app_".strtolower($data['crud']['route'])."_new', methods: ['GET', 'POST'])]
     public function new(Request \$request, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity']."();
@@ -137,14 +137,14 @@ $string .= "\n\n\t#[Route(path: '/".$data['crud']['route']."/new', name: 'app_".
             \$entityManager->persist(\$".strtolower($data['crud']['entity']).");
             \$entityManager->flush();
             \$this->addFlash('success', 'Simpan Data Berhasil');
-            return \$this->redirectToRoute('app_".$data['crud']['route']."_edit', ['id' => \$".strtolower($data['crud']['entity'])."->getId()], Response::HTTP_SEE_OTHER);
+            return \$this->redirectToRoute('app_".strtolower($data['crud']['route'])."_edit', ['id' => \$".strtolower($data['crud']['entity'])."->getId()], Response::HTTP_SEE_OTHER);
         }
-        return \$this->render('".$data['crud']['route']."/new.html.twig', [
+        return \$this->render('".strtolower($data['crud']['route'])."/new.html.twig', [
             '".strtolower($data['crud']['entity'])."' => \$".strtolower($data['crud']['entity']).",
             'form' => \$form
         ]);
     }";
-$string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".$data['crud']['route']."_edit', methods: ['GET', 'POST'])]
+$string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/edit', name: 'app_".strtolower($data['crud']['route'])."_edit', methods: ['GET', 'POST'])]
     public function edit(Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity']).", int \$id, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         if (!\$".strtolower($data['crud']['entity']).") {
@@ -163,16 +163,16 @@ $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/edit', name: 'app_".
             ".$setData."
             \$entityManager->flush();
             \$this->addFlash('success', 'Edit Data Berhasil');
-            return \$this->redirectToRoute('app_".$data['crud']['route']."_edit', ['id' => \$".strtolower($data['crud']['entity'])."->getId()], Response::HTTP_SEE_OTHER);
+            return \$this->redirectToRoute('app_".strtolower($data['crud']['route'])."_edit', ['id' => \$".strtolower($data['crud']['entity'])."->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return \$this->render('".$data['crud']['route']."/edit.html.twig', [
-            '".$data['crud']['route']."' => \$".$data['crud']['route'].",
+        return \$this->render('".strtolower($data['crud']['route'])."/edit.html.twig', [
+            '".strtolower($data['crud']['route'])."' => \$".strtolower($data['crud']['route']).",
             'form' => \$form
         ]);
     }";
 
-    $string .= "\n\n\t#[Route('/".$data['crud']['route']."/{id}/delete', name: 'app_".$data['crud']['route']."_delete', methods: ['POST'])]
+    $string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/delete', name: 'app_".strtolower($data['crud']['route'])."_delete', methods: ['POST'])]
     public function delete(EntityManagerInterface \$entityManager, Request \$request, ".$data['crud']['entity']." \$".strtolower($data['crud']['entity'])."): Response
     {
         if (\$this->isCsrfTokenValid('delete'.\$".strtolower($data['crud']['entity'])."->getId(), \$request->request->get('_token'))) {

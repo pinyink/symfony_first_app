@@ -33,6 +33,9 @@ class Book
     #[ORM\Column(length: 32)]
     private ?string $extension = null;
 
+    #[ORM\ManyToOne(inversedBy: 'bookpublisher')]
+    private ?Publisher $publisher = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +109,18 @@ class Book
     public function setExtension(string $extension): static
     {
         $this->extension = $extension;
+
+        return $this;
+    }
+
+    public function getPublisher(): ?Publisher
+    {
+        return $this->publisher;
+    }
+
+    public function setPublisher(?Publisher $publisher): static
+    {
+        $this->publisher = $publisher;
 
         return $this;
     }
