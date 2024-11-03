@@ -1,0 +1,112 @@
+{% extends 'adminlte.html.twig' %}
+
+{% block title %}Book{% endblock %}
+
+{% block stylesheets %}
+    
+{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Book</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item">Book</li>
+                        <li class="breadcrumb-item active">Lihat</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Data Book</h3>
+                <div class="card-tools">
+                    <a href="{{ path('app_book')}}" class="btn btn-tool">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+					<tr>
+                        <td style="width: 20%">Name Book</td>
+                        <td style="width: 5%;">:</td>
+                        <td style="width: 75%;">{{ book.name }}</td>
+                    </tr>
+					<tr>
+                        <td style="width: 20%">cover</td>
+                        <td style="width: 5%;">:</td>
+                        <td style="width: 75%;">{{ image_directory ~ 'book/' ~ book.cover }} <br><img src="{{ asset(image_directory ~ 'book/' ~ book.cover ) }}" alt="" class="img img-thumbnail img-preview " style="width: 100px; height: 100px;"></td>
+                    </tr>
+					<tr>
+                        <td style="width: 20%">cover</td>
+                        <td style="width: 5%;">:</td>
+                        <td style="width: 75%;">{{ book.cover }}</td>
+                    </tr>
+					<tr>
+                        <td style="width: 20%">file</td>
+                        <td style="width: 5%;">:</td>
+                        <td style="width: 75%;">{{ book.file }}</td>
+                    </tr>
+				</table>
+            </div>
+            <div class="card-footer d-flex" style="gap: 5px;">
+                <a href="{{ path('app_book_edit', { 'id' : book.id}) }}" class="btn btn-info btn-sm pull-right"><i class="fa fa-edit"></i> edit</a>
+                {{ include('book/_delete_form.html.twig') }}
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+$('#formDelete').submit(function (e) { 
+    e.preventDefault();
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            type: "POST",
+            url: "{{ path('app_book_delete', {'id': book.id}) }}",
+            data: $('#formDelete').serialize(),
+            dataType: "JSON",
+            success: function (response) {
+                Swal.fire({
+                    title: "Notification !",
+                    text: response.message,
+                    icon: response.info
+                }).then(function (e) {
+                    window.location.href = "{{ path('app_book') }}";
+                });;
+            }
+        });
+        }
+    });
+});
+</script>
+{% endblock %}
+        

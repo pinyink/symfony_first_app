@@ -6,6 +6,7 @@
 parameters:
     foto_profil_directory: '%kernel.project_dir%/public/uploads/foto_profil'
     image_directory: '%kernel.project_dir%/public/uploads/image'
+    pdf_directory: '%kernel.project_dir%/public/uploads/pdf'
     timezone: '%env(APP_TIMEZONE)%'
 
 services:

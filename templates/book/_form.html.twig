@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+	{{ form_row(form.name) }}
+	{{ form_row(form.cover) }}
+	<div class="row mb-2">
+                <div class="col-md-2" id="divimage_cover">
+                    <img src="{{ asset('img/image.jpg') }}" alt="" class="img img-thumbnail img-preview " id="img-preview-cover" style="width: 100px; height: 100px;">
+                </div>
+                {% if (button_label == 'Update') %}
+                    <div class="col-md-2" id="divcol_cover">
+                        <img src="{{ asset(image_directory ~ 'book/' ~ book.cover) }}" alt="" class="img img-thumbnail img-preview" id="img-old-cover" style="width: 100px; height: 100px;">
+                    </div>
+                {% endif %}
+            </div>
+	{{ form_row(form.file) }}
+    {{ form_row(form.author) }}
+    <button class="btn btn-primary"><i class="fas fa-edit"></i> {{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

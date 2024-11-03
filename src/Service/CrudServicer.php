@@ -9,7 +9,7 @@ class CrudServicer
         $arrayUse = [];
         foreach ($data['fields'] as $key => $value) {
             // jika type image maka store use
-            if ($value['type'] == 3) {
+            if ($value['type'] == 3 || $value['type'] == 5) {
                 array_push($arrayUse, 'use App\Service\FileUploader;');
             }
         }
@@ -106,6 +106,7 @@ $string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/show', n
             // get data dari form dan memproses
             $setData .= "\$".$value['name']." = \$form->get('".$value['name']."')->getData();
             if (\$".$value['name'].") {
+                \$fileUploader->setDir('');
                 \$dir = \$this->getParameter('image_directory');
                 \$fileUploader->setTargetDirectory(\$dir.'/".strtolower($data['crud']['entity'])."');
                 \$".$value['name']."FileName = \$fileUploader->upload(\$".$value['name'].");
@@ -120,6 +121,22 @@ $string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/show', n
             $setData .= "\$".$value['name']." = \$form->get('".$value['name']."')->getData();
             \$".strtolower($data['crud']['entity'])."->set".ucwords(strtolower($value['name']))."(str_replace('.', '', \$".$value['name']."));";
         }
+
+        // jika type pdf
+        if ($value['type'] == 5) {
+            // set param di function
+            array_push($arrayParams, 'FileUploader $fileUploader');
+
+            // get data dari form dan memproses
+            $setData .= "\$".$value['name']." = \$form->get('".$value['name']."')->getData();
+            if (\$".$value['name'].") {
+                \$fileUploader->setDir('');
+                \$dir = \$this->getParameter('pdf_directory');
+                \$fileUploader->setTargetDirectory(\$dir.'/".strtolower($data['crud']['entity'])."');
+                \$".$value['name']."FileName = \$fileUploader->upload(\$".$value['name'].");
+                \$".strtolower($data['crud']['entity'])."->set".ucwords($value['name'])."(\$".$value['name']."FileName);
+            }";
+        }
     }
     $arrayParamsUnique = array_unique($arrayParams);
     $stringParams = implode(", ", $arrayParamsUnique);
@@ -127,9 +144,7 @@ $string .= "\n\n\t#[Route(path: '/".strtolower($data['crud']['route'])."/new', n
     public function new(Request \$request, EntityManagerInterface \$entityManager, ".$stringParams."): Response
     {
         \$".strtolower($data['crud']['entity'])." = new ".$data['crud']['entity']."();
-
-        ".$setBeforeData."
-
+        ".$setBeforeData."\n
         \$form = \$this->createForm(".$data['crud']['form']."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
         if (\$form->isSubmitted() && \$form->isValid()) {
@@ -152,10 +167,7 @@ $string .= "\n\n\t#[Route('/".strtolower($data['crud']['route'])."/{id}/edit', n
                 'No ".$data['crud']['entity']." found for id '.\$id
             );
         }
-
-        ".$setBeforeData."
-
-
+        ".$setBeforeData."\n
         \$form = \$this->createForm(".strtolower($data['crud']['form'])."::class, \$".strtolower($data['crud']['entity']).");
         \$form->handleRequest(\$request);
 
@@ -246,6 +258,29 @@ $string .= "\n}";
                     'onkeydown' => 'formatRupiah(\"".strtolower($data['crud']['entity'])."_".strtolower($value['name'])."\")'
                 ]
             ])";
+            }
+
+            // jika pdf
+            if ($value['type'] == 5) {
+                $form .= "\n\t\t\t->add('".$value['name']."', FileTypeType::class, [
+                'label' => '".$value['label']."',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new FileConstraints([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'application/pdf',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid PDF'
+                    ])
+                ],
+                'attr' => [
+                    'accept' => '.pdf',
+                ]
+            ])";
+                array_push($arrayUse, 'use Symfony\Component\Form\Extension\Core\Type\FileType as FileTypeType;');
+                array_push($arrayUse, 'use Symfony\Component\Validator\Constraints\File as FileConstraints;');
             }
         }
         $arrayUseUnique = array_unique($arrayUse);
