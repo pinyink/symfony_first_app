@@ -94,7 +94,7 @@ class CrudController extends AbstractController
 
         return $this->render('crud/edit.html.twig', [
             'crud' => $crud,
-            'form' => $form,
+            'form' => $form, 
         ]);
     }
 
