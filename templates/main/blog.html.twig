@@ -8,6 +8,12 @@
 <meta name="description" content="{{ post.summary }}">
 {% endblock %}
 
+{% block stylesheets %}
+    <style>
+        .code-container { background-color: #eaeaea; padding: 20px; border-radius: 8px; margin: 10px 0; } .code-container pre { background-color: #333; color: #f4f4f9; padding: 15px; border-radius: 8px; overflow-x: auto; } .code-container pre code { font-family: Consolas, 'Courier New', monospace; }
+    </style>
+{% endblock %}
+
 {% block body %}
 <section id="hero">
     <h2>{{ post.title }}</h2>
