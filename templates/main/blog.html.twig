@@ -32,7 +32,7 @@
         <div class="blog">
             <div class="blog-detail">
                 {% if (post.sampul != null) %}
-                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" class="img-blog" alt="{{ post.sampul.name }}">
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" style="width: 100%; border-radius: 15px;" alt="{{ post.sampul.name }}">
                 {% endif %}
                 
                 {{ post.content|raw }}
