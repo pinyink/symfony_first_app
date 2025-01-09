@@ -67,8 +67,10 @@ class MainController extends AbstractController
         $dataPost = $post->findOneBy(['url' => $slug]);
         if (!$dataPost) {
             throw $this->createNotFoundException('Page Not Found');
-            
         }
+
+        $dataPost->setViews(intval($dataPost->getViews()) + 1);
+        $entityManagerInterface->flush();
 
         $recentPost = $post->data([], [], 3);
         return $this->render('main/blog.html.twig', [

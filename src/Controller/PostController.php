@@ -75,6 +75,7 @@ class PostController extends AbstractController
             $post->setUser($user);
             $post->setDate(new \Datetime());
             $post->setModified(new \DateTime());
+            $post->setViews(0);
             $entityManager->persist($post);
             $entityManager->flush();
             $this->addFlash('success', 'Simpan Data Berhasil');

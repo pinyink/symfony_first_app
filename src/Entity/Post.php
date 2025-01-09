@@ -51,6 +51,9 @@ class Post
     #[ORM\Column(nullable: true)]
     private ?int $publish = null;
 
+    #[ORM\Column]
+    private ?int $views = null;
+
     public function __construct()
     {
         $this->postToCategories = new ArrayCollection();
@@ -197,6 +200,18 @@ class Post
     public function setPublish(?int $publish): static
     {
         $this->publish = $publish;
+
+        return $this;
+    }
+
+    public function getViews(): ?int
+    {
+        return $this->views;
+    }
+
+    public function setViews(int $views): static
+    {
+        $this->views = $views;
 
         return $this;
     }
