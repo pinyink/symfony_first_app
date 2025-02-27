@@ -46,9 +46,18 @@
     {% block body %}{% endblock %}
 
     <footer id="footer">
-        <p class="copy-right">
-            pindipin - 2023
-        </p>
+        <div class="container space-around">
+            <p class="copy-right">
+                pindipin - 2023
+            </p>
+            <p class="about">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Disclaimer</a>
+                <a href="#">Terms of Sevice (ToS)</a>
+                <a href="#">Contact Us</a>
+                <a href="#">About Us</a>
+            </p>
+        </div>
     </footer>
     <script src="{{ asset('assets/blog/assets/script.js') }}"></script>
     {% block javascripts %}

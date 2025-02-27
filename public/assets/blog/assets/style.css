@@ -4,7 +4,7 @@ body {
     box-sizing: content-box;
     margin: 0;
     font-family: Poppins;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 header {
@@ -526,13 +526,24 @@ a.categories:hover {
 footer {
     margin-top: 25px;
     width: 100%;
-    min-height: 72px;
+    min-height: 100px;
     background-color: #000;
     display: flex;
     align-items: center;
-    justify-content: center;
+    font-weight: 600;
+}
+
+footer .space-around {
+    display: flex;
+    justify-content: space-between;
 }
 
 footer .copy-right {
     color: #fff;
+}
+
+footer .about a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
 }
