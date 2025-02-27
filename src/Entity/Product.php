@@ -19,9 +19,6 @@ class Product
     #[ORM\Column(length: 32)]
     private ?string $harga = null;
 
-    #[ORM\ManyToOne]
-    private ?Categories $categories = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -47,18 +44,6 @@ class Product
     public function setHarga(string $harga): static
     {
         $this->harga = $harga;
-
-        return $this;
-    }
-
-    public function getCategories(): ?Categories
-    {
-        return $this->categories;
-    }
-
-    public function setCategories(?Categories $categories): static
-    {
-        $this->categories = $categories;
 
         return $this;
     }

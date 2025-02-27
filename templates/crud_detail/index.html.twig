@@ -47,7 +47,26 @@
                 </div>
             </div>
             <div class="card-body">
-                {{ include('crud/_form.html.twig') }}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ crud.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Entity_name</th>
+                            <td>{{ crud.entityName }}</td>
+                        </tr>
+                        <tr>
+                            <th>Form_name</th>
+                            <td>{{ crud.formName }}</td>
+                        </tr>
+                        <tr>
+                            <th>Route_name</th>
+                            <td>{{ crud.routeName }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -140,7 +159,6 @@
                                     <option value="2">Textarea</option>
                                     <option value="3">Image</option>
                                     <option value="4">Rupiah</option>
-                                    <option value="5">Pdf</option>
                                 </select>
                             </div>
                         </div>

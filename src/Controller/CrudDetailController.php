@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Crud;
 use App\Entity\CrudDetail;
-use App\Entity\Product;
-use App\Form\CrudType;
 use App\Repository\CrudDetailRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,17 +17,13 @@ class CrudDetailController extends AbstractController
     public function index(int $id, EntityManagerInterface $entitiyManager): Response
     {
         $crud = $entitiyManager->getRepository(Crud::class)->find($id);
-        $form = $this->createForm(CrudType::class, $crud, ['action' => $this->generateUrl('app_crud_edit', ['id' => $id])]);
-
         if (!$crud) {
             throw $this->createNotFoundException(
                 'Id Not Found For Id: '.$id
             );
         }
-
         return $this->render('crud_detail/index.html.twig', [
             'crud' => $crud,
-            'form' => $form
         ]);
     }
 
@@ -37,7 +31,6 @@ class CrudDetailController extends AbstractController
     public function fields(int $id, CrudDetailRepository $crudDetail)
     {
         $crud = $crudDetail->findBy(['crud' => $id]);
-        
         $data = [];
         foreach ($crud as $key => $value) {
             $array = [
@@ -45,7 +38,7 @@ class CrudDetailController extends AbstractController
                 'name' => $value->getName(),
                 'crudName' => $value->getCrud()->getEntityName(),
                 'type' => $value->getType(),
-                'setting' => $value->getSetting(),
+                'setting' => $value->getSetting()
             ];
             array_push($data, $array);
         }

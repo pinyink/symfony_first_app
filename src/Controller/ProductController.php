@@ -10,12 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class ProductController extends AbstractController
 {
     #[Route('/product/index', name: 'app_product')]
     public function index(): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Not Allowed Access');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY', null, 'Not Allowed Access');
 
         return $this->render('product/index.html.twig', [
         ]);
@@ -24,10 +25,10 @@ class ProductController extends AbstractController
 	#[Route(path: '/product/ajax', name: 'app_product_ajax', methods: ['POST'])]
     public function ajax(DataTableService $dataTable, EntityManagerInterface $entityManager, Request $request) : Response
     {
-        $dataTable->setColumnOrder([null, null, 'nama', 'categories.name', 'harga']);
-        $dataTable->setColumnSearch(['id', 'nama', 'categories.name', 'harga']);
+        $dataTable->setColumnOrder([null, null, 'nama', 'harga']);
+        $dataTable->setColumnSearch(['id', 'nama', 'harga']);
         $dataTable->setTable('product');
-        $dataTable->setQuery('select product.*, categories.name as categories_name from product left join categories on product.categories_id = categories.id');
+        $dataTable->setQuery('select * from product');
         $queryResult = $dataTable->getData($entityManager, $request);
         $data = [];
         $params = $request->request->all();
@@ -36,8 +37,7 @@ class ProductController extends AbstractController
             $row = array();
             $row[] = $no;
             $row[] = "<a href='".$this->generateUrl('app_product_show', ['id' => $value['id']])."' class='btn btn-sm btn-primary mr-1'><i class='fa fa-search'></i></a><a href='".$this->generateUrl('app_product_edit', ['id' => $value['id']])."' class='btn btn-sm btn-info'><i class='fa fa-edit'></i></a>";
-			$row[] = htmlspecialchars($value['nama']);
-            $row[] = $value['categories_name'];
+			$row[] = $value['nama'];
 			$row[] = number_format($value['harga'], 0, ',', '.');
             $data[] = $row;
             $no++;
@@ -54,7 +54,6 @@ class ProductController extends AbstractController
 	#[Route('/product/{id}/show', name: 'app_product_show', methods: ['GET'])]
     public function show(Product $product): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Not Allowed Access');
         return $this->render('product/show.html.twig', [
             'product' => $product,
         ]);
@@ -63,7 +62,6 @@ class ProductController extends AbstractController
 	#[Route(path: '/product/new', name: 'app_product_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Not Allowed Access');
         $product = new Product();
 
         $product->setHarga(number_format($product->getHarga(), 0, ',', '.'));
@@ -87,7 +85,6 @@ class ProductController extends AbstractController
 	#[Route('/product/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, int $id, EntityManagerInterface $entityManager, ): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Not Allowed Access');
         if (!$product) {
             throw $this->createNotFoundException(
                 'No Product found for id '.$id
@@ -117,7 +114,6 @@ class ProductController extends AbstractController
 	#[Route('/product/{id}/delete', name: 'app_product_delete', methods: ['POST'])]
     public function delete(EntityManagerInterface $entityManager, Request $request, Product $product): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER', null, 'Not Allowed Access');
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();

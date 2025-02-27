@@ -27,8 +27,8 @@ class CrudTwigServicer
     {
         $filesystem = new Filesystem();
         try {
-            if (!file_exists($this->getDir().'/../templates/'.strtolower($this->data['crud']['route']))) {
-                mkdir($this->getDir().'/../templates/'.strtolower($this->data['crud']['route']));
+            if (!file_exists($this->getDir().'/../templates/'.$this->data['crud']['route'])) {
+                mkdir($this->getDir().'/../templates/'.$this->data['crud']['route']);
             }
         } catch (IOExceptionInterface $exception) {
             return "An error occurred while creating your directory at ".$exception->getPath();
@@ -84,7 +84,7 @@ class CrudTwigServicer
             <div class=\"card-header\">
                 <h3 class=\"card-title\">Data ".$this->data['crud']['entity']."</h3>
                 <div class=\"card-tools\">
-                    <a href=\"{{ path('app_".strtolower($this->data['crud']['route'])."_new')}}\" class=\"btn btn-tool\">
+                    <a href=\"{{ path('app_".$this->data['crud']['route']."_new')}}\" class=\"btn btn-tool\">
                         <i class=\"fas fa-plus\"></i>
                     </a>
                     <button type=\"button\" class=\"btn btn-tool\" data-card-widget=\"remove\" title=\"Remove\">
@@ -127,7 +127,7 @@ class CrudTwigServicer
                 },
                 \"order\": [],
                 \"ajax\": {
-                    \"url\": \" {{ path('app_".strtolower($this->data['crud']['route'])."_ajax') }}\",
+                    \"url\": \" {{ path('app_".$this->data['crud']['route']."_ajax') }}\",
                     \"headers\": {
                         'X-Requested-With': 'XMLHttpRequest'
                     },
@@ -150,7 +150,7 @@ class CrudTwigServicer
     </script>
 {% endblock %}
         ";
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/index.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/index.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
@@ -160,7 +160,7 @@ class CrudTwigServicer
     private function createNew() : static
     {
         $string = $this->makeForm('Save', 'Tambah');
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/new.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/new.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
@@ -170,7 +170,7 @@ class CrudTwigServicer
     private function createEdit() : static
     {
         $string = $this->makeForm('Update', 'Update');
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/edit.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/edit.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
@@ -227,7 +227,7 @@ class CrudTwigServicer
             <div class=\"card-header\">
                 <h3 class=\"card-title\">Data ".$this->data['crud']['entity']."</h3>
                 <div class=\"card-tools\">
-                    <a href=\"{{ path('app_".strtolower($this->data['crud']['route'])."')}}\" class=\"btn btn-tool\">
+                    <a href=\"{{ path('app_".$this->data['crud']['route']."')}}\" class=\"btn btn-tool\">
                         <i class=\"fas fa-list\"></i>
                     </a>
                     <button type=\"button\" class=\"btn btn-tool\" data-card-widget=\"remove\" title=\"Remove\">
@@ -236,7 +236,7 @@ class CrudTwigServicer
                 </div>
             </div>
             <div class=\"card-body\">
-                {{ include('".strtolower($this->data['crud']['route'])."/_form.html.twig', {'button_label': '".$action."'}) }}
+                {{ include('".$this->data['crud']['route']."/_form.html.twig', {'button_label': '".$action."'}) }}
             </div>
 
         </div>
@@ -279,7 +279,7 @@ class CrudTwigServicer
         $string = "{{ form_start(form) }}".$formRow."
     <button class=\"btn btn-primary\"><i class=\"fas fa-edit\"></i> {{ button_label|default('Save') }}</button>
 {{ form_end(form) }}";
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/_form.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/_form.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
@@ -344,7 +344,7 @@ class CrudTwigServicer
             <div class=\"card-header\">
                 <h3 class=\"card-title\">Data ".$this->data['crud']['entity']."</h3>
                 <div class=\"card-tools\">
-                    <a href=\"{{ path('app_".strtolower($this->data['crud']['route'])."')}}\" class=\"btn btn-tool\">
+                    <a href=\"{{ path('app_".$this->data['crud']['route']."')}}\" class=\"btn btn-tool\">
                         <i class=\"fas fa-list\"></i>
                     </a>
                     <button type=\"button\" class=\"btn btn-tool\" data-card-widget=\"remove\" title=\"Remove\">
@@ -356,8 +356,8 @@ class CrudTwigServicer
                 ".$table."
             </div>
             <div class=\"card-footer d-flex\" style=\"gap: 5px;\">
-                <a href=\"{{ path('app_".strtolower($this->data['crud']['route'])."_edit', { 'id' : ".strtolower($this->data['crud']['entity']).".id}) }}\" class=\"btn btn-info btn-sm pull-right\"><i class=\"fa fa-edit\"></i> edit</a>
-                {{ include('".strtolower($this->data['crud']['route'])."/_delete_form.html.twig') }}
+                <a href=\"{{ path('app_".$this->data['crud']['route']."_edit', { 'id' : ".strtolower($this->data['crud']['entity']).".id}) }}\" class=\"btn btn-info btn-sm pull-right\"><i class=\"fa fa-edit\"></i> edit</a>
+                {{ include('".$this->data['crud']['route']."/_delete_form.html.twig') }}
             </div>
         </div>
 
@@ -383,7 +383,7 @@ $('#formDelete').submit(function (e) {
         if (result.isConfirmed) {
             $.ajax({
             type: \"POST\",
-            url: \"{{ path('app_".strtolower($this->data['crud']['route'])."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\",
+            url: \"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\",
             data: $('#formDelete').serialize(),
             dataType: \"JSON\",
             success: function (response) {
@@ -392,7 +392,7 @@ $('#formDelete').submit(function (e) {
                     text: response.message,
                     icon: response.info
                 }).then(function (e) {
-                    window.location.href = \"{{ path('app_".strtolower($this->data['crud']['route'])."') }}\";
+                    window.location.href = \"{{ path('app_".$this->data['crud']['route']."') }}\";
                 });;
             }
         });
@@ -402,7 +402,7 @@ $('#formDelete').submit(function (e) {
 </script>
 {% endblock %}
         ";
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/show.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/show.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
@@ -411,12 +411,12 @@ $('#formDelete').submit(function (e) {
 
     private function createDelete() : static 
     {
-    $string = "<form method=\"post\" action=\"{{ path('app_".strtolower($this->data['crud']['route'])."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\" id=\"formDelete\">
+    $string = "<form method=\"post\" action=\"{{ path('app_".$this->data['crud']['route']."_delete', {'id': ".strtolower($this->data['crud']['entity']).".id}) }}\" id=\"formDelete\">
     <input type=\"hidden\" name=\"_token\" value=\"{{ csrf_token('delete' ~ ".strtolower($this->data['crud']['entity']).".id) }}\">
     <button class=\"btn btn-danger btn-sm\"><i class=\"fa fa-trash\"></i>Delete</button>
 </form>
 ";
-        $path = $this->getDir().'/../templates/'.strtolower($this->data['crud']['route']).'/_delete_form.html.twig';
+        $path = $this->getDir().'/../templates/'.$this->data['crud']['route'].'/_delete_form.html.twig';
         $create = fopen($path, "w") or die("Change your permision folder for application and harviacode folder to 777");
         fwrite($create, $string);
         fclose($create);
