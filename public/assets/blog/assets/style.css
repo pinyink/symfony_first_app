@@ -538,11 +538,11 @@ footer .space-around {
     justify-content: space-between;
 }
 
-footer .copy-right {
+.copy-right {
     color: #fff;
 }
 
-footer .about a {
+.about a {
     color: #fff;
     text-decoration: none;
     margin-left: 15px;
