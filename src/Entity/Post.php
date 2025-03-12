@@ -54,9 +54,16 @@ class Post
     #[ORM\Column]
     private ?int $views = null;
 
+    /**
+     * @var Collection<int, PostStatistic>
+     */
+    #[ORM\OneToMany(mappedBy: 'Post', targetEntity: PostStatistic::class)]
+    private Collection $postStatistics;
+
     public function __construct()
     {
         $this->postToCategories = new ArrayCollection();
+        $this->postStatistics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -212,6 +219,36 @@ class Post
     public function setViews(int $views): static
     {
         $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PostStatistic>
+     */
+    public function getPostStatistics(): Collection
+    {
+        return $this->postStatistics;
+    }
+
+    public function addPostStatistic(PostStatistic $postStatistic): static
+    {
+        if (!$this->postStatistics->contains($postStatistic)) {
+            $this->postStatistics->add($postStatistic);
+            $postStatistic->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostStatistic(PostStatistic $postStatistic): static
+    {
+        if ($this->postStatistics->removeElement($postStatistic)) {
+            // set the owning side to null (unless already changed)
+            if ($postStatistic->getPost() === $this) {
+                $postStatistic->setPost(null);
+            }
+        }
 
         return $this;
     }

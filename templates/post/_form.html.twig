@@ -2,7 +2,58 @@
 	{{ form_row(form.url) }}
 	{{ form_row(form.title) }}
 	{{ form_row(form.summary) }}
+
+	<div class="d-flex pt-3 pb-3">
+		<button class="btn btn-default btn-sm" type="button" onclick="input_code()">input code</button>
+	</div>
+
 	{{ form_row(form.content) }}
 	{{ form_row(form.publish) }}
     <button class="btn btn-primary"><i class="fas fa-save"></i> {{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
+<div class="modal" id="modal_code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title">Insert Code</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<textarea name="textarea_code" id="textarea_code" class="form-control"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-primary" onclick="insert_code()">Insert</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+		</div>
+	</div>
+</div>
+
+{% block javascripts %}
+<script>
+	function input_code() {
+		$('[name="textarea_code"]').val('');
+		$('#modal_code').modal('show');
+	}
+
+	function insert_code() {
+		var value = $('[name="textarea_code"]').val();
+		var content = $('#post_content');
+		content.summernote('code', content.val() + `<div class="code-container"><pre><code>`+escapeHtml(value)+`</code></pre></div><br><p></p>`);
+		$('#modal_code').modal('hide');
+		console.log(value);
+	}
+
+	function escapeHtml(unsafe){
+		return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
+</script>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\PostStatistic;
 use App\Entity\PostToCategories;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,7 +70,17 @@ class MainController extends AbstractController
             throw $this->createNotFoundException('Page Not Found');
         }
 
+        $request = Request::createFromGlobals();
+        $statistic = new PostStatistic();
+        $statistic->setPost($dataPost);
+        $statistic->setIpAddress($request->getClientIp());
+        $statistic->setDatetime(new \DateTime());
+        $statistic->setAgent($request->headers->get('User-Agent'));
+        $statistic->setAgentDetail($request->headers->get('User-Agent'));
+        $statistic->setPlatform('no platform');
+
         $dataPost->setViews(intval($dataPost->getViews()) + 1);
+        $entityManagerInterface->persist($statistic);
         $entityManagerInterface->flush();
 
         $recentPost = $post->data([], [], 3);

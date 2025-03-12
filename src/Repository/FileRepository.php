@@ -60,6 +60,7 @@ class FileRepository extends ServiceEntityRepository
                 $query->setParameter($key, $value);
             }
         }
+        $query->orderBy('f.id', 'desc');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         return $query->getQuery()->getResult();
