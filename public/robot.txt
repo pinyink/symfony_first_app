@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /login/
+
+Sitemap: https://pindipin.my.id/sitemap.xml
