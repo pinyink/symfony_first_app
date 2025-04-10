@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Laman;
 use App\Entity\Post;
 use App\Entity\PostStatistic;
 use App\Entity\PostToCategories;
@@ -87,6 +88,19 @@ class MainController extends AbstractController
         return $this->render('main/blog.html.twig', [
             'post' => $dataPost,
             'recents' => $recentPost
+        ]);
+    }
+
+    #[Route('/page/{slug}', name: 'page', methods: ['GET'])]
+    public function page(string $slug, EntityManagerInterface $entityManagerInterface): Response
+    {
+        $laman = $entityManagerInterface->getRepository(Laman::class);
+        $dataLaman = $laman->findOneBy(['url' => $slug]);
+        if (!$dataLaman) {
+            throw $this->createNotFoundException('Page Not Found');
+        }
+        return $this->render('main/laman.html.twig', [
+            'laman' => $dataLaman
         ]);
     }
 }

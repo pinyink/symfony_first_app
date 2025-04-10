@@ -33,8 +33,6 @@
         <nav class="navbar" id="navbar">
             <ul class="menu">
                 <li><a href="{{ path('homepage') }}">Home</a></li>
-                <li><a href="#">Profil</a></li>
-                <li><a href="#">Contact Us</a></li>
             </ul>
             <ul class="header-right">
                 <li><a href="{{ path('login') }}">Login</a></li>
@@ -51,11 +49,11 @@
                 pindipin - 2023
             </p>
             <p class="about">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Disclaimer</a>
-                <a href="#">Terms of Sevice (ToS)</a>
-                <a href="#">Contact Us</a>
-                <a href="#">About Us</a>
+                <a href="{{ path('page', {'slug' : 'privacy-policy' }) }}">Privacy Policy</a>
+                <a href="{{ path('page', {'slug' : 'disclaimer' }) }}">Disclaimer</a>
+                <a href="{{ path('page', {'slug' : 'tos' }) }}">Terms of Sevice (ToS)</a>
+                <a href="{{ path('page', {'slug' : 'contact-us' }) }}">Contact Us</a>
+                <a href="{{ path('page', {'slug' : 'about-us' }) }}">About Us</a>
             </p>
         </div>
     </footer>
