@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="Author" content="Pindipin">
+    <meta name="keywords" content="pindipin, pinyink, pin yink, nur khafindi" />
+    <meta name="Distribution" content="Global">
+    <meta name="Developer" content="Nur Khafindi - pindi">
+    <meta name="robots" content="index, follow" />
+    <meta name="Googlebot" content="index, follow" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block meta %}
+        
+    {% endblock %}
+    <link rel="icon" href="/assets/img/logo_pindipin.ico">
+
+    <link rel="stylesheet" href="{{ asset('assets/blog/assets/style.css') }}">
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="{{ path('homepage') }}">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo Pindipin" style="height: 40px;">
+            </a>
+        </div>
+        <nav class="navbar" id="navbar">
+            <ul class="menu">
+                <li><a href="{{ path('homepage') }}">Home</a></li>
+            </ul>
+            <ul class="header-right">
+                <li><a href="{{ path('login') }}">Login</a></li>
+            </ul>
+            <i class="fas fa-bars mobile-nav-toggle"></i>
+        </nav>
+    </header>
+
+    {% block body %}{% endblock %}
+
+    <footer id="footer">
+        <div class="container space-around">
+            <p class="copy-right">
+                pindipin - 2023
+            </p>
+            <p class="about">
+                <a href="{{ path('page', {'slug' : 'privacy-policy' }) }}">Privacy Policy</a>
+                <a href="{{ path('page', {'slug' : 'disclaimer' }) }}">Disclaimer</a>
+                <a href="{{ path('page', {'slug' : 'tos' }) }}">Terms of Sevice (ToS)</a>
+                <a href="{{ path('page', {'slug' : 'contact-us' }) }}">Contact Us</a>
+                <a href="{{ path('page', {'slug' : 'about-us' }) }}">About Us</a>
+            </p>
+        </div>
+    </footer>
+    <script src="{{ asset('assets/blog/assets/script.js') }}"></script>
+    {% block javascripts %}
+
+    {% endblock %}
+</body>
+</html>
