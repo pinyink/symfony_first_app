@@ -78,224 +78,26 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">Pindipin</a>
+            <a class="navbar-brand fw-bold" href="{{ path('homepage') }}">Pindipin</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#home">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#skills">Skills</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#projects">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
+                    {# <li class="nav-item">
+                        <a class="nav-link" href="">Home</a>
+                    </li> #}
                     <li class="nav-item ms-lg-3">
-                        <a class="btn btn-outline-light" href="#"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
+                        <a class="btn btn-outline-light" href="{{ path('login') }}"><i class="fas fa-sign-in-alt me-1"></i> Login</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Carousel -->
-    <section id="home" class="hero-carousel">
-        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active carousel-item-1">
-                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                        <h1 class="text-5xl font-bold text-white mb-4">Hello, I'm Pindipin</h1>
-                        <p class="text-xl text-gray-300 mb-6">Full Stack Software Engineer with 5+ years of experience</p>
-                        <a href="#contact" class="btn btn-lg bg-pink-600 text-white hover:bg-pink-700 w-25 mx-auto">Hire Me</a>
-                    </div>
-                </div>
-                <div class="carousel-item carousel-item-2">
-                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                        <h1 class="text-5xl font-bold text-white mb-4">Creative Solutions</h1>
-                        <p class="text-xl text-gray-300 mb-6">Turning complex problems into elegant software solutions</p>
-                        <a href="#skills" class="btn btn-lg bg-pink-600 text-white hover:bg-pink-700 w-25 mx-auto">My Skills</a>
-                    </div>
-                </div>
-                <div class="carousel-item carousel-item-3">
-                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
-                        <h1 class="text-5xl font-bold text-white mb-4">Let's Build Something</h1>
-                        <p class="text-xl text-gray-300 mb-6">Custom software development tailored to your needs</p>
-                        <a href="#blog" class="btn btn-lg bg-pink-600 text-white hover:bg-pink-700 w-25 mx-auto">My Projects</a>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="display-5 fw-bold">My Skills & Expertise</h2>
-                <p class="text-muted">Technologies I work with</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fab fa-php fa-3x text-primary"></i>
-                        </div>
-                        <h4>PHP Developer</h4>
-                        <p class="text-muted">Building robust backend systems with PHP and modern frameworks.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fab fa-laravel fa-3x text-danger"></i>
-                        </div>
-                        <h4>Laravel Developer</h4>
-                        <p class="text-muted">Creating elegant applications with Laravel framework.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fas fa-database fa-3x text-info"></i>
-                        </div>
-                        <h4>MySQL</h4>
-                        <p class="text-muted">Designing and optimizing relational databases.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fab fa-js-square fa-3x text-warning"></i>
-                        </div>
-                        <h4>JavaScript</h4>
-                        <p class="text-muted">Developing interactive front-end experiences.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fab fa-github fa-3x text-dark"></i>
-                        </div>
-                        <h4>GitHub CI/CD</h4>
-                        <p class="text-muted">Implementing continuous integration and deployment pipelines.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
-                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
-                        <div class="icon mb-3">
-                            <i class="fas fa-code fa-3x text-success"></i>
-                        </div>
-                        <h4>API Development</h4>
-                        <p class="text-muted">Building RESTful APIs for web and mobile applications.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects & Articles Section -->
-    <section id="projects" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="display-5 fw-bold">Recent Projects & Articles</h2>
-                <p class="text-muted">Some of my latest work and writings</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="project-card card h-100">
-                        <img src="http://static.photos/technology/640x360/3" class="card-img-top" alt="Project 1">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="badge bg-primary text-white px-2 py-1 rounded">API</span>
-                                <span class="text-gray-500 text-sm"><i class="far fa-calendar-alt me-1"></i> January 2023</span>
-                            </div>
-                            <h5 class="card-title">E-commerce Platform</h5>
-                            <p class="card-text text-muted">Built with Laravel and Vue.js, featuring payment integration and inventory management.</p>
-                            <a href="#" class="btn btn-primary">View Project</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="project-card card h-100">
-                        <img src="http://static.photos/office/640x360/4" class="card-img-top" alt="Project 2">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="badge bg-primary text-white px-2 py-1 rounded">API</span>
-                                <span class="text-gray-500 text-sm"><i class="far fa-calendar-alt me-1"></i> January 2023</span>
-                            </div>
-                            <h5 class="card-title">CRM System</h5>
-                            <p class="card-text text-muted">Custom CRM solution with reporting dashboards and team collaboration features.</p>
-                            <a href="#" class="btn btn-primary">View Project</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="project-card card h-100">
-                        <img src="http://static.photos/education/640x360/5" class="card-img-top" alt="Article 1">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="badge bg-primary text-white px-2 py-1 rounded">API</span>
-                                <span class="text-gray-500 text-sm"><i class="far fa-calendar-alt me-1"></i> January 2023</span>
-                            </div>
-                            <h5 class="card-title">Laravel Best Practices</h5>
-                            <p class="card-text text-muted">Article covering modern Laravel development techniques and architecture patterns.</p>
-                            <a href="#" class="btn btn-primary">Read Article</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section py-5">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="display-5 fw-bold">Get In Touch</h2>
-                <p>Ready to start your project? Contact me today!</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8" data-aos="fade-up">
-                    <form>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control form-control-lg" placeholder="Your Name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="email" class="form-control form-control-lg" placeholder="Your Email" required>
-                            </div>
-                            <div class="col-12">
-                                <input type="text" class="form-control form-control-lg" placeholder="Subject">
-                            </div>
-                            <div class="col-12">
-                                <textarea class="form-control form-control-lg" rows="5" placeholder="Your Message" required></textarea>
-                            </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-light btn-lg px-4">Send Message</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
+    {% block body %}
+        
+    {% endblock %}
 
     <!-- Footer with Map -->
     <footer class="py-5">
@@ -312,8 +114,9 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="ratio ratio-16x9">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215373510285!2d-73.987844924239!3d40.74844097138899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1689871234567!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    {# <div class="ratio ratio-16x9"> #}
+                    <div>
+                        {# <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215373510285!2d-73.987844924239!3d40.74844097138899!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1689871234567!5m2!1sen!2sus" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> #}
                     </div>
                 </div>
             </div>
@@ -323,8 +126,11 @@
                     <p class="text-white mb-0">&copy; 2023 Pindipin. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="text-white me-3">Privacy Policy</a>
-                    <a href="#" class="text-white">Terms of Service</a>
+                    <a class="text-white me-3 text-decoration-none" href="{{ path('page', {'slug' : 'privacy-policy' }) }}">Privacy Policy</a>
+                    <a class="text-white me-3 text-decoration-none" href="{{ path('page', {'slug' : 'disclaimer' }) }}">Disclaimer</a>
+                    <a class="text-white me-3 text-decoration-none" href="{{ path('page', {'slug' : 'tos' }) }}">Terms of Sevice (ToS)</a>
+                    <a class="text-white me-3 text-decoration-none" href="{{ path('page', {'slug' : 'contact-us' }) }}">Contact Us</a>
+                    <a class="text-white me-3 text-decoration-none" href="{{ path('page', {'slug' : 'about-us' }) }}">About Us</a>
                 </div>
             </div>
         </div>

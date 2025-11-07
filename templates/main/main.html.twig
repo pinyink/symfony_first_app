@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Pindipin
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Home Pindipin, blog and portofolio, The latest industry news, interviews, technologies and resources.">
+{% endblock %}
+
+{% block body %}
+    <!-- Hero Carousel -->
+    <section id="home" class="hero-carousel">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active carousel-item-1">
+                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
+                        <h1 class="text-5xl font-bold text-white mb-4">Hello, I'm Pindipin</h1>
+                        <p class="text-xl text-gray-300 mb-6">Full Stack Software Engineer with 5+ years of experience</p>
+                    </div>
+                </div>
+                <div class="carousel-item carousel-item-2">
+                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
+                        <h1 class="text-5xl font-bold text-white mb-4">Creative Solutions</h1>
+                        <p class="text-xl text-gray-300 mb-6">Turning complex problems into elegant software solutions</p>
+                        <a href="#skills" class="btn btn-lg bg-pink-600 text-white hover:bg-pink-700 w-25 mx-auto">My Skills</a>
+                    </div>
+                </div>
+                <div class="carousel-item carousel-item-3">
+                    <div class="carousel-caption d-flex flex-column justify-content-center h-100">
+                        <h1 class="text-5xl font-bold text-white mb-4">Let's Build Something</h1>
+                        <p class="text-xl text-gray-300 mb-6">Custom software development tailored to your needs</p>
+                        <a href="#blog" class="btn btn-lg bg-pink-600 text-white hover:bg-pink-700 w-25 mx-auto">My Projects</a>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold">My Skills & Expertise</h2>
+                <p class="text-muted">Technologies I work with</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fab fa-php fa-3x text-primary"></i>
+                        </div>
+                        <h4>PHP Developer</h4>
+                        <p class="text-muted">Building robust backend systems with PHP and modern frameworks.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fab fa-laravel fa-3x text-danger"></i>
+                        </div>
+                        <h4>Laravel Developer</h4>
+                        <p class="text-muted">Creating elegant applications with Laravel framework.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fas fa-database fa-3x text-info"></i>
+                        </div>
+                        <h4>MySQL</h4>
+                        <p class="text-muted">Designing and optimizing relational databases.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fab fa-js-square fa-3x text-warning"></i>
+                        </div>
+                        <h4>JavaScript</h4>
+                        <p class="text-muted">Developing interactive front-end experiences.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fab fa-github fa-3x text-dark"></i>
+                        </div>
+                        <h4>GitHub CI/CD</h4>
+                        <p class="text-muted">Implementing continuous integration and deployment pipelines.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="skill-card p-4 bg-white shadow-sm text-center h-100">
+                        <div class="icon mb-3">
+                            <i class="fas fa-code fa-3x text-success"></i>
+                        </div>
+                        <h4>API Development</h4>
+                        <p class="text-muted">Building RESTful APIs for web and mobile applications.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects & Articles Section -->
+    <section id="projects" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold">Recent Projects & Articles</h2>
+                <p class="text-muted">Some of my latest work and writings</p>
+            </div>
+            <div class="row g-4">
+                {% for post in data %}
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="project-card card h-100">
+                            {% if (post.sampul_path == null) %}
+                                <img src="{{ asset('img/image.jpg') }}" alt="" id="imgSampul" class="card-img-top">
+                            {% else %}
+                                <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="{{ post.sampul_name }}" class="card-img-top">
+                            {% endif %}
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-3">
+                                    {% for item in post.categories %}
+                                        <span class="badge bg-primary text-white px-2 py-1 rounded">{{ item.name }}</span>
+                                    {% endfor %}
+                                    <span class="text-gray-500 text-sm"><i class="far fa-calendar-alt me-1"></i> {{ post.date|date('d F Y') }}</span>
+                                </div>
+                                <h5 class="card-title">
+                                    <a href="{{ path('blog', {slug: post.url }) }}">{{ post.title }}</a>
+                                </h5>
+                                <p class="card-text text-muted">{{ post.summary|substr(post.summary) }}</p>
+                                <a href="{{ path('blog', {slug: post.url }) }}" class="btn btn-primary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section py-5">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-5 fw-bold">Get In Touch</h2>
+                <p>Ready to start your project? Contact me today!</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8" data-aos="fade-up">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-lg" placeholder="Your Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control form-control-lg" placeholder="Your Email" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-lg" placeholder="Subject">
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control form-control-lg" rows="5" placeholder="Your Message" required></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-light btn-lg px-4">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

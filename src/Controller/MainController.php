@@ -14,7 +14,38 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'homepage')]
+    #[Route('/', name: 'homepage', methods: ['GET'])]
+    public function home(EntityManagerInterface $entityManagerInterface): Response
+    {
+        $perPage = 3;
+        
+        $post = $entityManagerInterface->getRepository(Post::class);
+        $kategori = $entityManagerInterface->getRepository(PostToCategories::class);
+
+        $where = [
+            'p.publish = :publish'
+        ];
+        $param = [
+            'publish' => '1'
+        ];
+
+        $data = $post->data($where, $param, $perPage, 0);
+        foreach ($data as $key => $value) {
+            $data[$key]['categories'] = [];
+            $postToCategories = $kategori->FindBy(['post' => $value['id']]);
+            foreach ($postToCategories as $k => $v) {
+                $data[$key]['categories'][] = [
+                    'name' => $v->getCategories()->getName(),
+                    'url' => $v->getCategories()->getUrl()
+                ];
+            }
+        }
+        return $this->render('main/main.html.twig', [
+            'data' => $data,
+        ]);
+    }
+
+    #[Route('/article', name: 'article')]
     public function index(EntityManagerInterface $entityManagerInterface, Request $request): Response
     {
         $perPage = 6;
