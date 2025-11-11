@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Pindipin
+{% endblock %}
+
+{% block meta %}
+<meta name="description"
+    content="Home Pindipin, blog and portofolio, The latest industry news, interviews, technologies and resources.">
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block body %}
+<section id="contents" class="gradient-bg">
+    <div class="container">
+        <div class="text-center mb-5 mt-5">
+            <h1 class="display-4 fw-bold">Pindipin Blog</h1>
+            <p class="lead text-muted">Sharing apa aja</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Main Content Area -->
+            <div class="col-lg-8">
+                <!-- Featured Post -->
+                <div class="card post-card mb-4 overflow-hidden">
+                    <img src="http://static.photos/nature/1200x630/42" class="card-img-top" alt="Featured Post" style="height: 350px; object-fit: cover;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="badge bg-primary">Featured</span>
+                            <small class="text-muted">June 12, 2023</small>
+                        </div>
+                        <h2 class="card-title h4">The Art of Writing Random Blog Posts</h2>
+                        <p class="card-text">Exploring the creative process behind crafting engaging content that no one asked for but everyone secretly enjoys reading.</p>
+                        <a href="#" class="btn btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+
+                <!-- Blog Posts Grid -->
+                <div class="row g-4">
+                    {% for post in data %}
+                        <div class="col-md-6">
+                            <div class="card post-card h-100">
+                                {% if (post.sampul_path == null) %}
+                                    <img src="{{ asset('img/image.jpg') }}" alt="" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul_path ) }}" alt="{{ post.sampul_name }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                    {% for item in post.categories %}
+                                        <span class="badge bg-primary category-badge">{{ item.name }}</span>
+                                    {% endfor %}
+                                        <small class="text-muted">{{ post.date|date('d F Y') }}</small>
+                                    </div>
+                                    <h3 class="card-title h5">{{ post.title }}</h3>
+                                    <p class="card-text">{{ post.summary|substr(post.summary) }}</p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <a href="{{ path('blog', {slug: post.url }) }}" class="btn btn-sm btn-outline-secondary">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if pageBefore1 >= 1 %}
+                            <li class="page-item">
+                                <a href="{{ path('article', { page: pageBefore1 }) }}" class="page-link" tabindex="-1"><i class="fa fa-arrow-left"></i> Previous</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                        {% endif %}
+
+                        {% set x = 1 %}
+                        {% for x in 1..3 %}
+                            {% if pageBefore3 >= 1 %}
+                                <li class="page-item"><a href="{{ path('article', { page: pageBefore3 }) }}" class="page-link">{{ pageBefore3 }}</a></li>
+                            {% endif %}
+                            {% set pageBefore3 = pageBefore3 + 1 %}
+                            {% set x = x + 1 %}
+                        {% endfor %}
+
+                        <li class="page-item active"><a href="{{ path('article', { page: page }) }}" class="page-link">{{ page }}</a></li>
+
+                        {% set x = 1 %}
+                        {% set currentPage = page %}
+                        {% for x in 1..3 %}
+                            {% if currentPage <= (totalPage + 1) and currentPage != page %}
+                                <li class="page-item"><a href="{{ path('article', { page: currentPage }) }}" class="page-link">{{ currentPage }}</a></li>
+                            {% endif %}
+                            {% set currentPage = currentPage + 1 %}
+                            {% set x = x + 1 %}
+                        {% endfor %}
+
+                        {% if page <= totalPage %}
+                            <li class="page-items">
+                                <a href="{{ path('article', { page: pageAfter1 }) }}" class="page-link">Next <i class="fa fa-arrow-right"></i></a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Search Widget -->
+                <div class="card search-box mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Search</h5>
+                            <form action="{{ path('article') }}" class="search">
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Search posts..." aria-label="Search posts">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                            </form>
+                    </div>
+                </div>
+
+                <!-- Categories Widget -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Categories</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#" class="badge bg-primary category-badge">Technology</a>
+                            <a href="#" class="badge bg-success category-badge">Travel</a>
+                            <a href="#" class="badge bg-info category-badge">Lifestyle</a>
+                            <a href="#" class="badge bg-warning text-dark category-badge">Food</a>
+                            <a href="#" class="badge bg-danger category-badge">Health</a>
+                            <a href="#" class="badge bg-secondary category-badge">Finance</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Posts Widget -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Recent Posts</h5>
+                        
+                        {% for recent in recents %}
+                        <div class="d-flex mb-3">
+                            {% if recent.sampul_path == null %}
+                                <img src="{{ asset('img/image.jpg') }}" class="rounded me-3" width="60" height="60" style="object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset(image_directory ~ 'file/' ~ recent.sampul_path ) }}" alt="{{ recent.sampul_name }}" class="rounded me-3" width="60" height="60" style="object-fit: cover;">
+                            {% endif %}
+
+                            <div>
+                                <h6 class="mb-1"><a href="{{ path('blog', {slug: recent.url }) }}">{{ recent.title }}</a></h6>
+                                <small class="text-muted">{{ recent.date|date('d F Y') }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Newsletter Widget -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Newsletter</h5>
+                        <p class="card-text">Subscribe to get notified about new posts.</p>
+                        <form>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Your email">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

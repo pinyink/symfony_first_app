@@ -69,12 +69,21 @@ class PostRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function total() : int
+    public function total($where = [], $params = []) : int
     {
         $query = $this->createQueryBuilder('p')
-            ->select('count(p.id) as total')
-            ->getQuery()
-            ->getOneOrNullResult();
-        return $query['total'];
+            ->select('count(p.id) as total');
+        if (!empty($where)) {
+            foreach ($where as $key => $value) {
+                $query->andWhere($value);
+            }
+        }
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->setParameter($key, $value);
+            }
+        }
+        $result = $query->getQuery()->getOneOrNullResult();
+        return $result ? (int)$result['total'] : 0;
     }
 }

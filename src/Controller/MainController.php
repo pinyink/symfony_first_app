@@ -44,8 +44,8 @@ class MainController extends AbstractController
             'data' => $data,
         ]);
     }
-
-    #[Route('/article', name: 'article')]
+    
+    #[Route('/article', name: 'article', methods:['GET'])]
     public function index(EntityManagerInterface $entityManagerInterface, Request $request): Response
     {
         $perPage = 6;
@@ -79,9 +79,12 @@ class MainController extends AbstractController
                 ];
             }
         }
-        $totalPage = $post->total() / $perPage;
+        $totalPage = $post->total($where, $param) / $perPage;
 
-        return $this->render('main/index.html.twig', [
+        $post = $entityManagerInterface->getRepository(Post::class);
+        $recentPost = $post->data([], [], 3);
+
+        return $this->render('main/article.html.twig', [
             'data' => $data,
             'page' => $page,
             'pageBefore3' => $page - 3,
@@ -89,7 +92,8 @@ class MainController extends AbstractController
             'pageAfter3' => $page + 3,
             'pageAfter1' => $page + 1,
             'totalPage' => $totalPage,
-            'search' => $search
+            'search' => $search,
+            'recents' => $recentPost
         ]);
     }
 
