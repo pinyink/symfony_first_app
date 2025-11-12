@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ post.summary }}">
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .code-container { background-color: #eaeaea; padding: 20px; border-radius: 8px; margin: 10px 0; } .code-container pre { background-color: #333; color: #f4f4f9; padding: 15px; border-radius: 8px; overflow-x: auto; } .code-container pre code { font-family: Consolas, 'Courier New', monospace; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section id="hero">
+    <h2>{{ post.title }}</h2>
+    <div class="userby">
+        <span>
+            <i class="fa fa-user-alt"></i> {{ post.user.fullname }}
+        </span>
+        <span>
+            <i class="fa fa-clock"></i> {{ post.date|date('d F Y') }}
+        </span>
+    </div>
+</section>
+
+<section id="content">
+    <div class="content">
+        <div class="blog">
+            <div class="blog-detail">
+                {% if (post.sampul != null) %}
+                    <img src="{{ asset(image_directory ~ 'file/' ~ post.sampul.path ) }}" style="width: 100%; border-radius: 15px;" alt="{{ post.sampul.name }}">
+                {% endif %}
+                
+                {{ post.content|raw }}
+            </div>
+            <div class="blog-aside">
+                <form action="{{ path('homepage') }}" class="side-search">
+                    <input type="text" name="search" placeholder="search">
+                    <button type="submit">Search</button>
+                </form>
+                <h1>Recent Post</h1>
+                {% for recent in recents %}
+                    <div class="box-aside">
+                        {% if recent.sampul_path == null %}
+                            <img src="{{ asset('img/image.jpg') }}" alt="">
+                        {% else %}
+                            <img src="{{ asset(image_directory ~ 'file/' ~ recent.sampul_path ) }}" alt="{{ recent.sampul_name }}">
+                        {% endif %}
+                        <div class="box-aside-body">
+                            <a href="{{ path('blog', {slug: recent.url }) }}"><h3>{{ recent.title }}</h3></a>
+                            <span>{{ recent.date|date('d F Y') }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVF8EJ4Q68"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-BVF8EJ4Q68');
+    </script>
+{% endblock %}
