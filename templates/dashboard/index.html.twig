@@ -1,6 +1,6 @@
 {% extends 'adminlte.html.twig' %}
 
-{% block title %}Hello DashboardController!{% endblock %}
+{% block title %}Dashboard Statistik{% endblock %}
 
 {% block body %}
 <div class="content-wrapper">
@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Blank Page</h1>
+                    <h1>Dashboard Statistik</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Blank Page</li>
+                        <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div>
             </div>
@@ -22,30 +22,99 @@
     </section>
 
     <section class="content">
+        <div class="container-fluid">
 
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Title</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pengunjung Bulanan (Harian)</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="get" class="form-inline mb-3">
+                                <select name="month" class="form-control form-control-sm mr-2">
+                                    {% for m in 1..12 %}
+                                        {% set mStr = "%02d"|format(m) %}
+                                        <option value="{{ mStr }}" {{ selectedMonth == mStr ? 'selected' }}>
+                                            {{ date('2024-' ~ mStr ~ '-01')|date('F') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <select name="year" class="form-control form-control-sm mr-2">
+                                    {% set currentYear = date()|date('Y') %}
+                                    {% for y in (currentYear - 2)..(currentYear + 1) %}
+                                        <option value="{{ y }}" {{ selectedYear == y ? 'selected' }}>{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                            </form>
+                            <canvas id="monthlyChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">5 Post Terpopuler (Views Terbanyak)</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th>Judul Post</th>
+                                        <th style="width: 100px text-align: center">Views</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in topPosts %}
+                                        <tr>
+                                            <td>{{ loop.index }}.</td>
+                                            <td>{{ post.title }}</td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger">{{ post.views }} views</span>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="3" class="text-center">Belum ada data post.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                Start creating your amazing application!
-            </div>
-
-            <div class="card-footer">
-                Footer
-            </div>
-
         </div>
-
     </section>
-
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(function () {
+            // Chart Bulanan (Line Chart)
+            var monthlyCanvas = $('#monthlyChart').get(0).getContext('2d');
+            new Chart(monthlyCanvas, {
+                type: 'line',
+                data: {
+                    labels: {{ monthlyLabels|json_encode|raw }},
+                    datasets: [{
+                        label: 'Pengunjung',
+                        fill: false,
+                        borderColor: '#ef5350',
+                        data: {{ monthlyValues|json_encode|raw }}
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    scales: { yAxes: [{ ticks: { beginAtZero: true, stepSize: 1 } }] }
+                }
+            });
+        })
+    </script>
 {% endblock %}
