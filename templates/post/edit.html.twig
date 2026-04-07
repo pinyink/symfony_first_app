@@ -158,7 +158,19 @@
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
 
     <script>
-        $('.summernote').summernote();
+        var lastRange;
+
+        $('.summernote').summernote({
+            height: 300,
+            codeviewFilter: false,
+            codeviewIframeFilter: false,
+            callbacks: {
+                // Simpan posisi kursor setiap kali ada perubahan/klik di editor
+                onBlur: function() {
+                    lastRange = $(this).summernote('createRange');
+                }
+            }
+        });
 
         $(document).ready(function () {
             getCategories();

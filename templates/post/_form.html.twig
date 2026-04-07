@@ -5,6 +5,7 @@
 
 	<div class="d-flex pt-3 pb-3">
 		<button class="btn btn-default btn-sm" type="button" onclick="input_code()">input code</button>
+		<button class="btn btn-info btn-sm ml-2" type="button" onclick="open_media()"><i class="fas fa-images"></i> Media</button>
 	</div>
 
 	{{ form_row(form.content) }}
@@ -32,8 +33,49 @@
 	</div>
 </div>
 
+<div class="modal fade" id="modal_media" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Media Manager</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <input type="file" id="upload_input" class="d-none" onchange="upload_media(this)">
+                        <button class="btn btn-success btn-sm" onclick="$('#upload_input').click()">
+                            <i class="fas fa-upload"></i> Upload Baru
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Preview</th>
+                                <th>Nama File</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="media_list_body">
+                            <!-- Data diisi via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% block javascripts %}
 <script>
+
+	function open_media() {
+		load_media();
+		$('#modal_media').modal('show');
+	}
+
 	function input_code() {
 		$('[name="textarea_code"]').val('');
 		$('#modal_code').modal('show');
@@ -45,6 +87,101 @@
 		content.summernote('code', content.val() + `<div class="code-container"><pre><code>`+escapeHtml(value)+`</code></pre></div><br><p></p>`);
 		$('#modal_code').modal('hide');
 		console.log(value);
+	}
+
+	function load_media() {
+		$.get('{{ path('media_list') }}', function(data) {
+			let html = '';
+			data.forEach(function(file) {
+				let preview = '';
+				if (file.type === 'image') {
+					preview = `<img src="${file.url}" style="height: 50px; width: 50px; object-fit: cover;">`;
+				} else if (file.type === 'video') {
+					preview = `<i class="fas fa-file-video fa-2x"></i>`;
+				} else if (file.type === 'pdf') {
+					preview = `<i class="fas fa-file-pdf fa-2x"></i>`;
+				} else {
+					preview = `<i class="fas fa-file-alt fa-2x"></i>`;
+				}
+
+				html += `<tr>
+					<td class="text-center">${preview}</td>
+					<td>${file.name}</td>
+					<td>
+						<button class="btn btn-xs btn-primary" onclick="insert_media('${file.url}', '${file.type}', '${file.name}')">Insert</button>
+						<button class="btn btn-xs btn-warning" onclick="rename_media(${file.id}, '${file.name}')">Rename</button>
+						<button class="btn btn-xs btn-danger" onclick="delete_media(${file.id})">Delete</button>
+					</td>
+				</tr>`;
+			});
+			$('#media_list_body').html(html);
+		});
+	}
+
+	function upload_media(input) {
+		if (input.files && input.files[0]) {
+			let formData = new FormData();
+			formData.append('file', input.files[0]);
+			$.ajax({
+				url: '{{ path('media_upload') }}',
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function() {
+					load_media();
+					$(input).val('');
+				}
+			});
+		}
+	}
+
+	function delete_media(id) {
+		if (confirm('Hapus file ini?')) {
+			$.post('{{ path('media_delete') }}', { id: id }, function() {
+				load_media();
+			});
+		}
+	}
+
+	function rename_media(id, oldName) {
+		let newName = prompt('Masukkan nama baru (tanpa ekstensi):', oldName.split('.').slice(0, -1).join('.'));
+		if (newName) {
+			$.post('{{ path('media_rename') }}', { id: id, newName: newName }, function() {
+				load_media();
+			});
+		}
+	}
+
+	function insert_media(url, type, name) {
+		var content = $('#post_content');
+		let html = '';
+
+		// Tentukan HTML berdasarkan tipe
+		if (type === 'image') {
+			content.summernote('insertImage', url);
+			$('#modal_media').modal('hide');
+			return;
+		} else if (type === 'video') {
+			html = `<video controls width="100%"><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video><p></p>`;
+		} else if (type === 'pdf') {
+			html = `<iframe src="${url}" width="100%" height="500px"></iframe><p></p>`;
+		} else {
+			html = `<a href="${url}" target="_blank" class="btn btn-link"><i class="fas fa-paperclip"></i> ${name}</a><p></p>`;
+		}
+
+		// RECOVERY FOCUS & INSERT
+		content.summernote('focus');
+		
+		// Jika range tersimpan, pulihkan dulu posisinya
+		if (lastRange) {
+			lastRange.select();
+		}
+
+		// Gunakan perintah pasteHTML milik range (lebih sakti dari insertHtml biasa)
+		content.summernote('pasteHTML', html);
+
+		$('#modal_media').modal('hide');
 	}
 
 	function escapeHtml(unsafe){
